@@ -33,6 +33,13 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
         + "--------------------------------" + "\n"
         + stringParse(courseDesc);
     const courseTitle = (courseCode === "HS") ? courseCode : courseCode + " " + courseSeasons;
+    
+    // var maxLevel = 0;
+    // for (var i = 0; i < coursePrereq.length; i++) {
+    //     maxLevel = Math.max(coursePrereq[i].)
+    // }
+    // console.log(coursePrereq);
+
     var courseNode = {
         id: courseCode,
         label: courseTitle,
@@ -206,9 +213,25 @@ function parseClassData(classData) {
             course.courseDescription,
             course.courseLevel,
             course.courseSeasons,
-            course.courseCodePrereq
+            course.coursePrereq
         ));
     }
+
+    // adjust levels of nodes automatically
+    for (var i = 0; i < parsedClassData.length; i++) {
+        let courseNode = parsedClassData[i];
+        let course = classData[courseNode.id];
+        // console.log(course);
+        // console.log(courseNode);
+        
+        let maxlvl = 0;
+        for (var p = 0; p < course.coursePrereq.length; p++) {
+            maxlvl = Math.max(maxlvl, classData[course.coursePrereq[p]].courseLevel);
+        }
+        // console.log(maxlvl);
+        courseNode.level = maxlvl;
+    }
+
     return parsedClassData;
 }
 

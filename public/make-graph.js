@@ -11,12 +11,12 @@ import { colorLuminance } from './lighten-color.js';
 function initialiseNetwork(classData) {
     // create nodes
     var nodeList = parseClassData(classData);
-    console.log(nodeList);
+    // console.log(nodeList);
     var nodes = new vis.DataSet(nodeList);
 
     // create edges
     var edgeList = parseClassPrereqData(classData);
-    console.log(edgeList);
+    // console.log(edgeList);
     var edges = new vis.DataSet(edgeList);
 
     // create the network
@@ -50,6 +50,7 @@ function initialiseNetwork(classData) {
     // initialise network
     var network = new vis.Network(container, data, options);
     network.startSimulation();
+
 
     // when node is selected, change color of edges coming to and from
     // the node
