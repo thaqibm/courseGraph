@@ -41,7 +41,7 @@ function parseCsvData(data) {
         let cn = data[i][1];                                        // courseName
         let cd = data[i][2];                                        // courseDesc
         let cp = (cc === "HS") ? [] : data[i][3].split(", ");       // coursePrereq
-        let cl = data[i][4];                                        // courseLevel
+        let cl = data[i][4];                                        // courseLevel (not needed)
         let cs = (cc === "HS") ? "" : makeSeasonString(data[i][5].split(", "));          // courseSeasons (as a string)
         parsedData[cc] = {
             courseCode: cc,

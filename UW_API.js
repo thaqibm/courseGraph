@@ -33,4 +33,5 @@ const getCourse = (termcode,name) =>{
     	return axios.get(URL + "/Courses/" + termcode +'/'+x[0] +'/' + x[1], {headers: {"X-API-KEY" : config.APIKEY}});
 }
 
+// export { getCourse };
 module.exports = {getCourse :getCourse}
