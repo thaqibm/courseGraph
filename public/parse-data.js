@@ -1,4 +1,6 @@
+// import axios from "axios";
 import { parseCsvData } from "./parseCsvData.js";
+// import * as uwapi from "../UW_API.js"
 
 // parseData.js: takes in data from csv, parses it into
 // respective node and edge data
@@ -29,11 +31,12 @@ function stringParse(string) {
 // generateCourseData: takes in parameters, generates node for course
 // that can be used in make-graph.js
 function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, courseSeasons, coursePrereq) {
+
     const courseDescription = courseCode + " (" + courseName + ")\n"
         + "--------------------------------" + "\n"
         + stringParse(courseDesc);
     const courseTitle = (courseCode === "HS") ? courseCode : courseCode + " " + courseSeasons;
-    
+
     // var maxLevel = 0;
     // for (var i = 0; i < coursePrereq.length; i++) {
     //     maxLevel = Math.max(coursePrereq[i].)
@@ -44,7 +47,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
         id: courseCode,
         label: courseTitle,
         title: courseDescription,
-        level: courseLevel,
+        // level: courseLevel,
         labelHighLightBold: true,
         borderWidth: 1.5,
         // color: {
@@ -77,7 +80,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#81f087',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'diamond',
@@ -91,7 +94,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#f7fa8c',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'hexagon',
@@ -105,7 +108,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#edb68c',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'star',
@@ -119,7 +122,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#63e8eb',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'triangleDown',
@@ -133,7 +136,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#f294e9',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'dot',
@@ -158,7 +161,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#c578f5',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'triangle',
@@ -172,7 +175,7 @@ function generateCourseNode(courseCode, courseName, courseDesc, courseLevel, cou
                 border: 'black',
                 highlight: {
                     background: '#e66e88',
-                    border: 'black', 
+                    border: 'black',
                 }
             },
             shape: 'square',
@@ -205,32 +208,63 @@ function parseClassData(classData) {
     var parsedClassData = []; // for node data
 
     for (c in classData) {
-        let course = classData[c];
-        // console.log(course);
+        // console.log(url);
+        let course = classData[c]; // from csv
+
         parsedClassData.push(generateCourseNode(
             course.courseCode,
             course.courseName,
             course.courseDescription,
-            course.courseLevel,
+            course.courseLevel, // technically not needed, but too much work to manually remove for each course
             course.courseSeasons,
             course.coursePrereq
         ));
+
+        // var xmlhttp = new XMLHttpRequest();
+        // xmlhttp.onreadystatechange = function () {
+        //     if (this.readyState == 4 && this.status == 200) {
+        //         var course = JSON.parse(this.responseText); // from link
+        //         // document.getElementById("demo").innerHTML = myObj.name;
+        //         // console.log(myObj);
+        //         let myCourse = classData[c]; // from csv
+        //         console.log(course);
+        //         // console.log(course);
+        //         parsedClassData.push(generateCourseNode(
+        //             course.associatedAcademicOrgCode + " " + course.catalogNumber,  // courseCode
+        //             course.title,                                                   // courseName
+        //             course.description,                                             // courseDescription
+        //             course.courseLevel,
+        //             myCourse.courseSeasons,
+        //             myCourse.coursePrereq
+        //         ));
+        //     }
+        // };
+        // const courseCode = myCourse.courseCode;
+        // console.log(courseCode);
+        // const url = "./api/course/" + courseCode.replaceAll(' ', '');
+        // xmlhttp.open("GET", url, true);
+        // xmlhttp.send();
+
     }
 
     // adjust levels of nodes automatically
     for (var i = 0; i < parsedClassData.length; i++) {
         let courseNode = parsedClassData[i];
         let course = classData[courseNode.id];
-        // console.log(course);
+        console.log(course);
         // console.log(courseNode);
-        
+
         let maxlvl = 0;
         for (var p = 0; p < course.coursePrereq.length; p++) {
             maxlvl = Math.max(maxlvl, classData[course.coursePrereq[p]].courseLevel);
         }
         // console.log(maxlvl);
-        courseNode.level = maxlvl;
+        console.log(courseNode.id + "|" + maxlvl);
+        classData[course.courseCode].courseLevel = maxlvl + 1;
+        courseNode.level = maxlvl + 1;
     }
+
+    console.log(parsedClassData);
 
     return parsedClassData;
 }
