@@ -12,28 +12,56 @@ const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const throttledQueue = require('throttled-queue');
 const fetch = require('node-fetch');
+const config = require("../config");
 
+const URL = "https://openapi.data.uwaterloo.ca/v3";
+
+// allow one operation every 10 seconds
 let throttle = throttledQueue(1, 10000);
 
-// getCourse(courseCode): returns promise containing data of course with courseCode
-async function getCourse(courseCode) {
-    return axios.get("https://course-graph.herokuapp.com/api/course/" + courseCode);
+// getSubjectList(): gets lists of subjects directly from the UW API
+// subjects have: code, name, descAbbr, desc and associated academic code
+async function getSubjectList() {
+    return axios.get(`${URL}/subjects`, { headers: { "X-API-KEY": config.APIKEY } });
 }
 
-// getCourseDoCommand(courseCode): returns the promise formed by
-// (axios) getting the courseCode from the API, then
-// command is a *function* that we pass in, which takes in the json "result",
-// and does something
-async function getCourseDoCommand(courseCode, command) {
-    getCourse(courseCode)
-        .then(function (result) {
-            command(result);
-        })
-        .catch(function (error) {
-            throw ("error in retrieving course");
-        });
-
+// getListOfCourses: returns promise containing data of all the courses
+// with subjectCode "subjectCode"
+// see commented code for example usage
+// example: // getListOfCourses("MATH", 1211);
+async function getListOfCourses(subjectCode, termcode) {
+    return axios.get(`${URL}/Courses/${termcode}/${subjectCode}`, { headers: { "X-API-KEY": config.APIKEY } });
 }
+
+// getCourse(courseCode): returns *promise* containing data of course with
+// courseCode = subjectCode + " " + catalogNumber, and termcode "termcode"
+// example usage: // getCourse("MATH", "135", "1211", () => {...});
+async function getCourse(subjectCode, catalogNumber, termcode) {
+    return axios.get(`${URL}/Courses/${termcode}/${subjectCode}/${catalogNumber}`, { headers: { "X-API-KEY": config.APIKEY } });
+}
+
+/* EXAMPLE COURSE
+{
+  courseId: '013391',
+  termCode: '1211',
+  termName: 'Winter 2021',
+  associatedAcademicCareer: 'GRD',
+  associatedAcademicGroupCode: 'MAT',
+  associatedAcademicOrgCode: 'STATACTSC',
+  subjectCode: 'ACTSC',
+  catalogNumber: '613',
+  title: 'Statistics for Actuarial Science',
+  descriptionAbbreviated: 'Statistics for Actuarial Sci',
+  description: 'Discrete and continuous random variables; generating functions; dependence; maximum likelihood estimation, functions of random variables; confidence intervals, hypothesis tests; Bayesian estimation, simple linear regression.',
+  gradingBasis: 'NUM',
+  courseComponentCode: 'LEC',
+  enrollConsentCode: 'D',
+  enrollConsentDescription: 'No Consent Required',
+  dropConsentCode: 'N',
+  dropConsentDescription: 'No Consent Required',
+  requirementsDescription: null
+}
+*/
 
 // parseClassData(result): takes result from getCourseDoCommand, and
 // parses the class data; returns JSON object containing relevant
@@ -48,80 +76,16 @@ function parseClassData(result) {
     }
 }
 
-// sleep(ms): "waits" for the number of milliseconds specified by ms
-// usage: "await sleep(N)", where N is an nat number
-// waits for N milliseconds
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// makeSqlCommand(subject, LB, UB): makes "insert" SQL command for the
-// subject "subject", with 'number' bounds LB and UB
-// it then passes that SQL command into the "connect" function, inserting the
-// relevant data into the database
-async function makeSqlCommandAndInsert(subjectList, LB, UB) {
-    let sqlcommand = "INSERT INTO my_class_data VALUES ";
-    async function helper() {
-        let promises = [];
-        for (let j in subjectList) {
-            for (let i = LB; i < UB; i++) {
-                // throttle(function() {
-                promises.push(getCourse(`${subjectList[j]}${i}`));
-                // });
-                // promises.push(getCourse(`${subjectList[j]}${i}`));
-            }
-            console.log(`Added all courses from ${subjectList[j]}`);
-        }
-        // console.log(`Added all courses`)
-        // console.log(promises);
-        return Promise.all(promises);
-    }
-    helper().then(lst => {
-        console.log("Making the SQL command...")
-        let validlst = [];
-        for (let c in lst) {
-            if (!(lst[c].data === '')) {
-                validlst.push(lst[c]);
-            }
-        }
-        for (let c in validlst) {
-            let pcd = parseClassData(validlst[c]);
-            if (pcd) {
-                // console.log(pcd.courseDescription);
-                // an "&" sign is used in place of any double quotes
-                // this can be "translated" back later if the description needs
-                // to be shown
-                if (c == validlst.length - 1) {
-                    sqlcommand += `(${pcd.courseId}, "${pcd.courseCode}", "${pcd.courseName.replace(/["]+/g, '&')}", "${pcd.courseDescription.replace(/["]+/g, '&')}")`;
-                }
-                else {
-                    sqlcommand += `(${pcd.courseId}, "${pcd.courseCode}", "${pcd.courseName.replace(/["]+/g, '&')}", "${pcd.courseDescription.replace(/["]+/g, '&')}"), `;
-                }
-
-            }
-        }
-        if (validlst.length != 0) {
-            connect(sqlcommand);
-        }
-        else {
-            console.log("Skipped course, since no valid courses with the subject")
-        }
-
-    }).catch(function (err) {
-        console.log(`ERROR: ${err}`);
-    })
-}
-
 // connect(sql): takes in a sql command sql, performs said command
 // on the my_class_data table
 function connect(sql) {
     var con = mysql.createConnection({
         host: "localhost",
         user: "root",
-        password: "XXXXXX", // my localhost pw would go here
+        password: "Hacknil8--", // my localhost pw would go here
         database: "class_data",
     });
-    console.log("SQL command has been made, now querying the server: ");
+    console.log("Querying the server: ");
 
     con.connect(function (err) {
         if (err) throw err;
@@ -140,24 +104,139 @@ function connect(sql) {
     });
 }
 
-// const courseSubjectList = ['AFM', 'ACTSC', 'ASL', 'ANTH', 'AHS', 'APPLS', 'AMATH', 'ARABIC', 'AE', 'ARCH', 'ARTS', 'ARBUS', 'AVIA', 'BIOL', 'BME', 'BASE', 'BUS', 'BET', 'CDNST', 'CHE', 'CHEM', 'CHINA', 'CMW', 'CIVE', 'CLAS', 'COGSCI', 'CO', 'COMM', 'CS', 'CFM', 'COOP', 'CROAT', 'CI', 'DAC', 'DUTCH', 'EARTH', 'EASIA', 'ECON', 'ECE'];
-// const courseSubjectList = ['AFM', 'ACTSC', 'ASL', 'ANTH', 'AHS', 'APPLS', 'AMATH', 'ARABIC', 'AE', 'ARCH', 'ARTS', 'ARBUS', 'AVIA', 'BIOL', 'BME', 'BASE', 'BUS', 'BET', 'CDNST', 'CHE', 'CHEM', 'CHINA', 'CMW', 'CIVE', 'CLAS', 'COGSCI', 'CO', 'COMM', 'CS', 'CFM', 'COOP', 'CROAT', 'CI', 'DAC', 'DUTCH', 'EARTH', 'EASIA', 'ECON', 'ECE', 'ENGL', 'EMLS', 'ENBUS', 'ERS', 'ENVE', 'ENVS', 'FINE', 'FR', 'GSJ', 'GENE', 'GEOG', 'GEOE', 'GER', 'GERON', 'GBDA', 'GRK', 'GLTH', 'HIST', 'HRM', 'HRTS', 'HUMSC', 'INDENT', 'INDG', 'INDEV', 'INTST', 'ITAL', 'ITALST', 'JAPAN', 'JS', 'KIN', 'INTEG', 'KOREA', 'LAT', 'LS', 'MGMT', 'MSCI', 'MNS', 'MATBUS', 'MATH', 'MTHEL', 'ME', 'MTE', 'MEDVL', 'MENN', 'MOHAWK', 'MUSIC', 'NE', 'OPTOM', 'PACS', 'PHARM', 'PHIL', 'PHYS', 'PLAN', 'PSCI', 'PORT', 'PD', 'PDARCH', 'PDPHRM', 'PSYCH', 'PMATH', 'REC', 'RS', 'RUSS', 'REES', 'SCI', 'SCBUS', 'SMF', 'SDS', 'SVENT', 'SOCWK', 'SWREN', 'STV', 'SOC', 'SE', 'SPAN', 'SPCOM', 'STAT', 'SI', 'SYDE', 'THPERF', 'UNIV', 'VCULT', 'WKRPT'];
-const courseSubjectList = ['ENGL', 'EMLS', 'ENBUS', 'ERS', 'ENVE', 'ENVS', 'FINE', 'FR', 'GSJ', 'GENE', 'GEOG', 'GEOE', 'GER', 'GERON', 'GBDA', 'GRK', 'GLTH', 'HIST', 'HRM', 'HRTS', 'HUMSC', 'INDENT', 'INDG', 'INDEV', 'INTST', 'ITAL', 'ITALST', 'JAPAN', 'JS', 'KIN', 'INTEG', 'KOREA', 'LAT', 'LS', 'MGMT', 'MSCI', 'MNS', 'MATBUS', 'MATH', 'MTHEL', 'ME', 'MTE', 'MEDVL', 'MENN', 'MOHAWK', 'MUSIC', 'NE', 'OPTOM', 'PACS', 'PHARM', 'PHIL', 'PHYS', 'PLAN', 'PSCI', 'PORT', 'PD', 'PDARCH', 'PDPHRM', 'PSYCH', 'PMATH', 'REC', 'RS', 'RUSS', 'REES', 'SCI', 'SCBUS', 'SMF', 'SDS', 'SVENT', 'SOCWK', 'SWREN', 'STV', 'SOC', 'SE', 'SPAN', 'SPCOM', 'STAT', 'SI', 'SYDE', 'THPERF', 'UNIV', 'VCULT', 'WKRPT'];
+// 1205 = S2020, 1209 = F2020, 1211 = W2021, (1215 = S2021)
+const termcodes = [1205, 1209, 1211];
+async function main() {
+
+    // first, get subject list and for each subject, the course list
+    // then, process the course list and make the sql query
+    // then create the sql query, create the table and insert values
+    getSubjectList().then(function (result) {
+        console.log("Subject list has been obtained");
+        let promises = [];
+        for (let i in result.data) {
+            for (let j in termcodes) {
+                promises.push(getListOfCourses(result.data[i].code, termcodes[j]));
+            }
+            // promises.push(getListOfCourses(result.data[i].code, termcode));
+        }
+        return Promise.all(
+            // "map" maps all the promises that return errors to *null*
+            promises.map(p => p.catch(error => null))
+        );
+    }).then(function (resolvedPromises) {
+        console.log("Course list has been obtained");
+        // sql is a list of the "VALUES" to be added to the database
+        // see the code below for the params
+        let sql = [];
+        for (let i in resolvedPromises) {
+            // print course data if course is valid
+            if (resolvedPromises[i] != null) {
+                let data = resolvedPromises[i].data;
+                for (let j in data) {
+                    let course = data[j];
+                    // console.log(`${data[j].subjectCode} ${data[j].catalogNumber}`);
+                    // console.log(data[j]);
+
+                    // we replace the double quotes with the "&" symbol for processing purposes
+                    sql.push(`("${course.courseId}", ` +
+                        `"${course.termCode}", ` +
+                        `"${course.subjectCode}", ` +
+                        `"${course.catalogNumber}", ` +
+                        `"${course.associatedAcademicGroupCode}", ` +
+                        `"${course.associatedAcademicCareer}", ` +
+                        `"${course.title.replace(/["]+/g, '&')}", ` +
+                        `"${course.description.replace(/["]+/g, '&')}", ` +
+                        `"${course.courseComponentCode}", ` +
+                        `"${course.enrollConsentCode}", ` +
+                        `"${course.enrollConsentDescription}", ` +
+                        `"${course.dropConsentCode}", ` +
+                        `"${course.dropConsentDescription}", ` +
+                        `"${course.requirementsDescription}")`.replace(/(\r\n|\n|\r)/gm, ""));
+                }
+            }
+        }
+        // console.log(sql);
+        return sql;
+
+    }).then(function (sql) {
+
+        console.log("Course list has been successfully processed");
+        // insertsqlcommands: list of SQL INSERT INTO commands to put course data into the DB
+        let insertsqlcommands = [];
+        // let sql = sqll.slice(0, 10);
+        for (let c in sql) {
+            insertsqlcommands.push(`INSERT INTO my_class_data2 VALUES ${sql[c]};`);
+        }
+
+        // createsqlcommand: SQL CREATE TABLE command to initialise table
+        let createsqlcommand = "CREATE TABLE IF NOT EXISTS my_class_data2 ("
+            + "courseId VARCHAR(6),"
+            + "termCode VARCHAR(4),"
+            + "subjectCode VARCHAR(10),"
+            + "catalogNumber VARCHAR(10),"
+            + "associatedAcademicGroupCode VARCHAR(6),"
+            + "associatedAcademicCareer VARCHAR(6),"
+            + "title VARCHAR(255),"
+            + "description VARCHAR(4095),"
+            + "courseComponentCode VARCHAR(15),"
+            + "enrollConsentCode VARCHAR(15),"
+            + "enrollConsentDescription VARCHAR(255),"
+            + "dropConsentCode VARCHAR(15),"
+            + "dropConsentDescription VARCHAR(255),"
+            + "requirementsDescription VARCHAR(1023)"
+            + ")";
+
+        // connect to server and execute both create and insert commands
+
+        const con = mysql.createConnection({
+            host: "localhost",
+            user: "root",
+            password: "", // my localhost pw would go here
+            database: "class_data",
+        });
+        console.log("Querying the server: ");
+
+        con.connect(function (err) {
+            if (err) throw err;
+            console.log("Connected to database!");
+
+            con.query(createsqlcommand, function (err, result) {
+                if (err) throw err;
+                console.log("Table has been successfully created");
+            })
+
+            for (i in insertsqlcommands) {
+                con.query(insertsqlcommands[i], function (err, result) {
+                    if (err) throw err;
+                    // console.log(`Value #${i} have been successfully inserted`);
+                })
+            }
+            // con.query(insertsqlcommand, function (err, result) {
+            //     if (err) throw err;
+            //     console.log("Values have been successfully inserted");
+            // })
+    
+            con.end(function (err) {
+                if (err) {
+                    return console.log("Error: " + err.message);
+                }
+                console.log("Closed the database connection.")
+            })
+        });
 
 
-// main(): adds all the courses from the course at
-// courseSubjectList[startIndex]
-async function main(startIndex) {
-    makeSqlCommandAndInsert([courseSubjectList[startIndex]], 0, 600);
+    }).catch(function (error) {
+        console.log(error);
+    });
 }
 
-// run code; throttle controls the rate at which main runs so
-// the server is not overloaded
-for (let i in courseSubjectList) {
-    throttle(function() {
-        main(i);
-    })
-}
+/* QUERY TO DISPLAY DATA
+SELECT * FROM my_class_data2 
+ORDER BY subjectCode, catalogNumber
+LIMIT 0, 10000;
+*/
 
+main();
 
 

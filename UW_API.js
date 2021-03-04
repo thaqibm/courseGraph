@@ -34,4 +34,4 @@ const getCourse = (termcode,name) =>{
 }
 
 // export { getCourse };
-module.exports = {getCourse :getCourse}
+// module.exports = {getCourse :getCourse}
