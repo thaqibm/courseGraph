@@ -11,8 +11,10 @@ const mysql = require('mysql');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const throttledQueue = require('throttled-queue');
+const fs = require('fs');
 const fetch = require('node-fetch');
 const config = require("../config");
+const password = require("../password");
 
 const URL = "https://openapi.data.uwaterloo.ca/v3";
 
@@ -175,29 +177,36 @@ async function main() {
         let dropsqlcommand = "DROP TABLE my_class_data2";
 
         // createsqlcommand: SQL CREATE TABLE command to initialise table
-        let createsqlcommand = "CREATE TABLE IF NOT EXISTS my_class_data2 ("
-            + "courseId VARCHAR(6),"
-            + "termCode VARCHAR(4),"
-            + "subjectCode VARCHAR(10),"
-            + "catalogNumber VARCHAR(10),"
-            + "associatedAcademicGroupCode VARCHAR(6),"
-            + "associatedAcademicCareer VARCHAR(6),"
-            + "title VARCHAR(255),"
-            + "courseDescription VARCHAR(4095),"
-            + "courseComponentCode VARCHAR(15),"
-            + "enrollConsentCode VARCHAR(15),"
-            + "enrollConsentDescription VARCHAR(255),"
-            + "dropConsentCode VARCHAR(15),"
-            + "dropConsentDescription VARCHAR(255),"
-            + "requirementsDescription VARCHAR(1023)"
-            + ")";
+        let createsqlcommand = fs.readFileSync(`${__dirname}/create.sql`)
+            .toString()
+            .replace(/(\r\n|\n|\r|\t)/gm,"");
+        // let createsqlcommand = "CREATE TABLE IF NOT EXISTS my_class_data2 ("
+        //     + "courseId VARCHAR(6),"
+        //     + "termCode VARCHAR(4),"
+        //     + "subjectCode VARCHAR(10),"
+        //     + "catalogNumber VARCHAR(10),"
+        //     + "associatedAcademicGroupCode VARCHAR(6),"
+        //     + "associatedAcademicCareer VARCHAR(6),"
+        //     + "title VARCHAR(255),"
+        //     + "courseDescription VARCHAR(4095),"
+        //     + "courseComponentCode VARCHAR(15),"
+        //     + "enrollConsentCode VARCHAR(15),"
+        //     + "enrollConsentDescription VARCHAR(255),"
+        //     + "dropConsentCode VARCHAR(15),"
+        //     + "dropConsentDescription VARCHAR(255),"
+        //     + "requirementsDescription VARCHAR(1023)"
+        //     + ")";
+
+        let interpretsqlcommand = fs.readFileSync(`${__dirname}/interpret.sql`)
+            .toString()
+            .replace(/(\r\n|\n|\r|\t)/gm,"");
 
         // connect to server and execute both create and insert commands
 
         const con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "", // my localhost pw would go here
+            password: password.password,
             database: "class_data",
         });
         console.log("Querying the server: ");
@@ -222,12 +231,21 @@ async function main() {
                     // console.log(`Value #${i} have been successfully inserted`);
                 })
             }
+
+            // con.query(interpretsqlcommand, function (err, result) {
+            //     if (err) throw err;
+            //     console.log(`Finished analysing result`);
+            // })
+
+            // const interpsqlcommand = fs.readFileSync('classDataQuery.sql').toString();
+
             // con.query(insertsqlcommand, function (err, result) {
             //     if (err) throw err;
             //     console.log("Values have been successfully inserted");
             // })
 
             con.end(function (err) {
+                console.log(`New table has been created`);
                 if (err) {
                     return console.log("Error: " + err.message);
                 }
