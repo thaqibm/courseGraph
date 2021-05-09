@@ -1,10 +1,36 @@
 // makes class data using the json class data object instead of the
 // user defined csv
 
-const fs = require('fs')
+// const fs = require('fs')
+
+import { classData } from './classData.js';
+
+// getClassData: custom function to read JSON file, and performs
+// the fn (which takes classData as a parameter) after loading it
+// var classData = {};
+// function getClassData(fn) { 
+//     var xhr = new XMLHttpRequest(); 
+//     xhr.open('GET', 'classData.json', true); 
+//     xhr.responseType = 'blob'; 
+//     xhr.onload = function(e) {  
+//       if (this.status == 200) { 
+//           var file = new File([this.response], 'temp'); 
+//           var fileReader = new FileReader(); 
+//           fileReader.addEventListener('load', function() { 
+//                fn(fileReader.result);
+//           }); 
+//           fileReader.readAsText(file); 
+//       }  
+//     } 
+//     xhr.send(); 
+// } 
+
+// getClassData(console.log);
+
+console.log(classData);
 
 // load classData from file
-const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
+// const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
 // console.log(classData);
 
 const courseSeasonDict = {
@@ -38,7 +64,7 @@ function stringParse(string) {
 // generateCourseNode: takes in parameters, generates node for course
 // that can be used in make-graph.js
 function generateCourseNode(subjectCode, catalogNumber) {
-
+    
     let courseData = classData[subjectCode][catalogNumber];
     let course = courseData[Object.keys(courseData)[0]];
     // get course seasons

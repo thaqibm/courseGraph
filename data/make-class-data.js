@@ -30,6 +30,9 @@
 }
 */
 
+// So far, this can only be run on node.js, since
+// it requires node modules
+
 const mysql = require('mysql');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
@@ -141,10 +144,10 @@ async function main() {
 
     // then, write classData object to classData.json file
     .then(function (classData) {
-        fs.writeFile("data/classData.json", JSON.stringify(classData), (err) => {
+        fs.writeFile("public/classData.js", `const classData = ${JSON.stringify(classData)};\nexport {classData};`, (err) => {
             if (err) throw err;
         })
-        console.log("Class data has been written to classData.json");
+        console.log("Class data has been written to classData.js, stored as the constant classData");
     })
     
     // catch and print any errors

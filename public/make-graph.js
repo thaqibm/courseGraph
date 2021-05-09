@@ -140,12 +140,14 @@ function initialiseNetwork(myClassDataDict) {
 }
 
 
-Papa.parse("class-data.csv", {
-    comments: "//",
-    delimiter: ";; ",
-    download: true,
-    complete: function (results) {
-        // console.log(results.data);
-        initialiseNetwork(parseCsvData(results.data));
-    }
-});
+// Papa.parse("class-data.csv", {
+//     comments: "//",
+//     delimiter: ";; ",
+//     download: true,
+//     complete: function (results) {
+//         // console.log(results.data);
+//         initialiseNetwork(parseCsvData(results.data));
+//     }
+// });
+
+initialiseNetwork({});

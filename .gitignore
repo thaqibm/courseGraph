@@ -1,4 +1,5 @@
 config.js
 node_modules
 password.js
-data/classData.json
+public/classData.json
+require.js
