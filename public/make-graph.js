@@ -2,10 +2,34 @@
 make-graph.js: initialises graph for website
 */
 
-import { parseClassData, parseClassPrereqData } from './parse-data.js';
-import { parseCsvData } from './parseCsvData.js';
-import { parseMyClassEdgeData, parseMyClassNodeData } from './parse-data-2.js';
+import {
+    generateCourseNode,
+    generateCourseEdge,
+    parseMyClassEdgeData,
+    parseMyClassNodeData
+} from './parse-data-2.js';
 import { colorLuminance } from './lighten-color.js';
+
+var nodes, edges, container, network;
+
+document.getElementById('addCourse').addEventListener("click", addCourse, false);
+
+// addCourse: adds course `<subjectCode> <catalogNumber>` to graph
+function addCourse() {
+    // console.log('hello');
+    let subjectCode = document.getElementById('subjectCode').value;
+    let catalogNumber = document.getElementById('catalogNumber').value;
+    let prereqsList = document.getElementById('coursePrereqs').value.split(",");
+
+    console.log(subjectCode);
+    console.log(catalogNumber);
+    console.log(prereqsList);
+
+    nodes.add(generateCourseNode(subjectCode, catalogNumber));
+    for (let prereq in prereqsList) {
+        edges.add(generateCourseEdge(subjectCode, catalogNumber, prereq.split(" ")[0], prereq.split(" ")[1]));
+    }
+}
 
 // initialiseNetwork: void function that initialises network
 // based off of class data
@@ -13,15 +37,15 @@ function initialiseNetwork(myClassDataDict) {
     // create nodes
     var nodeList = parseMyClassNodeData(myClassDataDict);
     console.log(nodeList);
-    var nodes = new vis.DataSet(nodeList);
+    nodes = new vis.DataSet(nodeList);
 
     // create edges
     var edgeList = parseMyClassEdgeData(myClassDataDict);
     console.log(edgeList);
-    var edges = new vis.DataSet(edgeList);
+    edges = new vis.DataSet(edgeList);
 
     // create the network
-    var container = document.getElementById('mynetwork');
+    container = document.getElementById('mynetwork');
 
     // provide the data in the vis format
     var data = {
@@ -51,7 +75,7 @@ function initialiseNetwork(myClassDataDict) {
 
 
     // initialise network
-    var network = new vis.Network(container, data, options);
+    network = new vis.Network(container, data, options);
     // network.startSimulation();
 
 

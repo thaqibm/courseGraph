@@ -64,7 +64,7 @@ function stringParse(string) {
 // generateCourseNode: takes in parameters, generates node for course
 // that can be used in make-graph.js
 function generateCourseNode(subjectCode, catalogNumber) {
-    
+
     let courseData = classData[subjectCode][catalogNumber];
     let course = courseData[Object.keys(courseData)[0]];
     // get course seasons
@@ -268,4 +268,4 @@ function parseMyClassEdgeData(myClassDataDict) {
 
 // console.log(parseMyClassEdgeData({"MATH 135": [], "MATH 136": ["MATH 135"], "MATH 237": ["MATH 135", "MATH 136"]}));
 
-export { parseMyClassEdgeData, parseMyClassNodeData };
+export { generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };
