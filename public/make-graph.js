@@ -52,7 +52,6 @@ function loadDataFromCSV(e) {
                     };
                 }
             }
-            console.log(classDataDict);
             initializeNetwork(classDataDict);
         }
     });
