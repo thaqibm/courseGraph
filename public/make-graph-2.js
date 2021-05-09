@@ -9,15 +9,15 @@ import { colorLuminance } from './lighten-color.js';
 
 // initialiseNetwork: void function that initialises network
 // based off of class data
-function initialiseNetwork(myClassDataDict) {
+function initialiseNetwork(classData) {
     // create nodes
-    var nodeList = parseMyClassNodeData(myClassDataDict);
-    console.log(nodeList);
+    var nodeList = parseClassData(classData);
+    // console.log(nodeList);
     var nodes = new vis.DataSet(nodeList);
 
     // create edges
-    var edgeList = parseMyClassEdgeData(myClassDataDict);
-    console.log(edgeList);
+    var edgeList = parseClassPrereqData(classData);
+    // console.log(edgeList);
     var edges = new vis.DataSet(edgeList);
 
     // create the network

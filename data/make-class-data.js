@@ -38,7 +38,6 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const config = require("../config");
 const password = require("../password");
-const { POINT_CONVERSION_UNCOMPRESSED } = require('constants');
 
 const URL = "https://openapi.data.uwaterloo.ca/v3";
 
@@ -71,31 +70,9 @@ async function getClassSchedule(subjectCode, catalogNumber, termcode) {
     return axios.get(`${URL}/ClassSchedules/${termcode}/${subjectCode}/${catalogNumber}`, { headers: { "X-API-KEY": config.APIKEY } });
 }
 
-// getEnrolledStudents(subjectCode, catalogNumber, term): gets number of enrolled students
-// in the course
-
-// async function getEnrolledStudents(subjectCode, catalogNumber, termcode) {
-//     getClassSchedule(subjectCode, catalogNumber, termcode)
-//         .then((result) => {
-//             let rd = result.data;
-//             let acc = 0;
-//             for (i in rd) {
-//                 let section = rd[i];
-//                 if (section.courseComponent === 'LEC') {
-//                     acc += section.enrolledStudents;
-//                 }
-//             }
-
-//             return acc;
-
-//         }).catch((err) => {
-//             console.log(err);
-//         })
-// }
-
 
 // 1205 = S2020, 1209 = F2020, 1211 = W2021, (1215 = S2021)
-const termcodes = [1205, 1209, 1211];
+const termcodes = [1209, 1211, 1215];
 
 // main function: make json object pertaining to class data
 async function main() {
