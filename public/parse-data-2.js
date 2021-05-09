@@ -76,7 +76,7 @@ function generateCourseNode(subjectCode, catalogNumber) {
     // console.log(courseData[Object.keys(courseData)[0]]);
 
     const courseNodeDescription =
-        `${subjectCode} ${catalogNumber} (${course.title})\nCourse ID: ${course.id}\n--------------------------\n${stringParse(course.description)}\n--------------------------\n${course.requirementsDescription}\n`;
+        `${subjectCode} ${catalogNumber} (${course.title})\nCourse ID: ${course.id}\n--------------------------\n${stringParse(course.description)}\n--------------------------\n${stringParse(course.requirementsDescription)}\n`;
     // console.log(courseNodeDescription);
     const courseNodeTitle = (subjectCode === "HS") ? subjectCode : `${subjectCode} ${catalogNumber} ${courseSeasons}`;
     // console.log(courseNodeTitle);

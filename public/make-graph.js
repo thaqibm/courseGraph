@@ -19,16 +19,17 @@ function addCourse() {
     // console.log('hello');
     let subjectCode = document.getElementById('subjectCode').value;
     let catalogNumber = document.getElementById('catalogNumber').value;
-    let prereqsList = document.getElementById('coursePrereqs').value.split(",");
+    let prereqsList = document.getElementById('coursePrereqs').value.split(",").filter(x => x);
 
-    console.log(subjectCode);
-    console.log(catalogNumber);
-    console.log(prereqsList);
-
-    nodes.add(generateCourseNode(subjectCode, catalogNumber));
-    for (let prereq in prereqsList) {
-        edges.add(generateCourseEdge(subjectCode, catalogNumber, prereq.split(" ")[0], prereq.split(" ")[1]));
-    }
+    try {
+        nodes.add(generateCourseNode(subjectCode, catalogNumber));
+        for (let i in prereqsList) {
+            edges.add(generateCourseEdge(subjectCode, catalogNumber, prereqsList[i].split(" ")[0], prereqsList[i].split(" ")[1]));
+        }
+    } catch (err) {
+        console.log(err);
+        alert("Bad course format, try again");
+    };
 }
 
 // initialiseNetwork: void function that initialises network
