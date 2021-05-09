@@ -2,25 +2,76 @@
 make-graph.js: initialises graph for website
 */
 
-import { parseClassData, parseClassPrereqData } from './parse-data.js';
-import { parseCsvData } from './parseCsvData.js';
+import {
+    generateCourseNode,
+    generateCourseEdge,
+    parseMyClassEdgeData,
+    parseMyClassNodeData
+} from './parse-data.js';
 import { colorLuminance } from './lighten-color.js';
+
+var nodes, edges, container, network;
+
+// run addCourse when button clicked
+document.getElementById('addCourse').addEventListener("click", addCourse, false);
+
+// addCourse: adds course `<subjectCode> <catalogNumber>` to graph
+function addCourse() {
+    let subjectCode = document.getElementById('subjectCode').value;
+    let catalogNumber = document.getElementById('catalogNumber').value;
+    // .filter(x => x) gets rid of empty strings
+    let courseSeasons = document.getElementById('courseSeasons').value.split(";").filter(x => x);
+    let prereqsList = document.getElementById('coursePrereqs').value.split(";").filter(x => x);
+
+    try {
+        nodes.add(generateCourseNode(subjectCode, catalogNumber, courseSeasons));
+        for (let i in prereqsList) {
+            edges.add(generateCourseEdge(subjectCode, catalogNumber, prereqsList[i].split(" ")[0], prereqsList[i].split(" ")[1]));
+        }
+    } catch (err) {
+        console.log(err);
+        alert("Bad course format, try again");
+    };
+}
+
+document.getElementById("classDataFile").addEventListener("change", loadDataFromCSV, false)
+
+// loadDataFromCSV: loads class data from CSV file
+function loadDataFromCSV(e) {
+    let filein = e.target.files[0];
+    Papa.parse(filein, {
+        download: true,
+        complete: function (results) {
+            let classDataDict = {};
+            for (let i in results.data) {
+                let row = results.data[i];
+                if (typeof row[0] !== 'undefined') {
+                    classDataDict[`${row[0]} ${row[1]}`] = {
+                        'seasons': row[2].split(";").filter(x => x),
+                        'prereqs': row[3].split(";").filter(x => x),
+                    };
+                }
+            }
+            initializeNetwork(classDataDict);
+        }
+    });
+}
 
 // initialiseNetwork: void function that initialises network
 // based off of class data
-function initialiseNetwork(classData) {
+function initializeNetwork(myClassDataDict) {
     // create nodes
-    var nodeList = parseClassData(classData);
-    // console.log(nodeList);
-    var nodes = new vis.DataSet(nodeList);
+    var nodeList = parseMyClassNodeData(myClassDataDict);
+    console.log(nodeList);
+    nodes = new vis.DataSet(nodeList);
 
     // create edges
-    var edgeList = parseClassPrereqData(classData);
-    // console.log(edgeList);
-    var edges = new vis.DataSet(edgeList);
+    var edgeList = parseMyClassEdgeData(myClassDataDict);
+    console.log(edgeList);
+    edges = new vis.DataSet(edgeList);
 
     // create the network
-    var container = document.getElementById('mynetwork');
+    container = document.getElementById('mynetwork');
 
     // provide the data in the vis format
     var data = {
@@ -33,6 +84,8 @@ function initialiseNetwork(classData) {
         layout: {
             hierarchical: {
                 enabled: true,
+                sortMethod: 'directed',
+                shakeTowards: 'roots',
                 direction: 'LR',
                 nodeSpacing: 300,
                 levelSeparation: 400,
@@ -48,8 +101,8 @@ function initialiseNetwork(classData) {
 
 
     // initialise network
-    var network = new vis.Network(container, data, options);
-    network.startSimulation();
+    network = new vis.Network(container, data, options);
+    // network.startSimulation();
 
 
     // when node is selected, change color of edges coming to and from
@@ -136,13 +189,4 @@ function initialiseNetwork(classData) {
     })
 }
 
-
-Papa.parse("class-data.csv", {
-    comments: "//",
-    delimiter: ";; ",
-    download: true,
-    complete: function (results) {
-        // console.log(results.data);
-        initialiseNetwork(parseCsvData(results.data));
-    }
-});
+initializeNetwork({});

@@ -19,6 +19,12 @@ Running the code:
     <!-- Necessary script for PapaParse -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
 
+    <!-- Necessary script for jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Necessary stylesheet for Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
     <!-- Stylesheet for Google Fonts -->
     <!-- Lato 400 / 700 -->
@@ -30,15 +36,58 @@ Running the code:
 
 <body>
 
-    <h1 id="heading">My Course Graph Interface</h1>
-    <h3 id="sub-heading">For advanced courses, the normal course description is shown instead.</h3>
-    <div id="mynetwork"></div>
+    <!-- Script for graph -->
+    <!-- <script type="module" src="make-graph.js"></script> -->
 
-    <!-- <h2>This is some text after the main graph.</h2> -->
+    <h1 id="heading">My Course Graph</h1>
 
-    <!-- NOTE the type "module"! -->
-    <!-- <script type="module" src="jquery-csv-test.js"></script> -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <h4>Graph</h4>
+                <div id="mynetwork"></div>
+            </div>
+            <div class="col-lg-4">
+                <div class="container-fluid">
+                    <h4>Add Course</h4>
+                    <h5>Subject Code (e.g. MATH)</h5>
+                    <input type="text" id="subjectCode" />
+                    <h5>Catalog Number (e.g. 136)</h5>
+                    <input type="text" id="catalogNumber" />
+                    <h5>Seasons course offered (e.g. F;W;S)</h5>
+                    <h6>Separate courses by semicolons</h6>
+                    <input type="text" id="courseSeasons" />
+                    <h5>Course Prerequisites (e.g. MATH 136; MATH 138)</h5>
+                    <h6>Separate courses by semicolons</h6>
+                    <input type="text" id="coursePrereqs" />
+                    <br>
+                    <button id="addCourse">Add Course</button>
+                </div>
+                <div class="container-fluid">
+                    <h5>Or, alternatively, import class data via a CSV:</h5>
+                    <h6>Each row should be in the form of</h6>
+                    <h6>subjectCode,catalogNumber,courseSeasons,coursePrereqs</h6>
+                    <input type="file" accept="csv" id="classDataFile">
+                    <button id="loadFile">Load File</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for graph -->
     <script type="module" src="make-graph.js"></script>
+
+    <!-- Scripts for Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
 </body>
 
 </html>

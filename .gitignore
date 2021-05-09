@@ -1,1 +1,5 @@
 node_modules
+password.js
+public/classData.js
+public/testClassData.csv
+require.js
