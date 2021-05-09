@@ -7,22 +7,24 @@ import {
     generateCourseEdge,
     parseMyClassEdgeData,
     parseMyClassNodeData
-} from './parse-data-2.js';
+} from './parse-data.js';
 import { colorLuminance } from './lighten-color.js';
 
 var nodes, edges, container, network;
 
+// run addCourse when button clicked
 document.getElementById('addCourse').addEventListener("click", addCourse, false);
 
 // addCourse: adds course `<subjectCode> <catalogNumber>` to graph
 function addCourse() {
-    // console.log('hello');
     let subjectCode = document.getElementById('subjectCode').value;
     let catalogNumber = document.getElementById('catalogNumber').value;
-    let prereqsList = document.getElementById('coursePrereqs').value.split(",").filter(x => x);
+    // .filter(x => x) gets rid of empty strings
+    let courseSeasons = document.getElementById('courseSeasons').value.split(";").filter(x => x);
+    let prereqsList = document.getElementById('coursePrereqs').value.split(";").filter(x => x);
 
     try {
-        nodes.add(generateCourseNode(subjectCode, catalogNumber));
+        nodes.add(generateCourseNode(subjectCode, catalogNumber, courseSeasons));
         for (let i in prereqsList) {
             edges.add(generateCourseEdge(subjectCode, catalogNumber, prereqsList[i].split(" ")[0], prereqsList[i].split(" ")[1]));
         }
@@ -32,9 +34,33 @@ function addCourse() {
     };
 }
 
+document.getElementById("classDataFile").addEventListener("change", loadDataFromCSV, false)
+
+// loadDataFromCSV: loads class data from CSV file
+function loadDataFromCSV(e) {
+    let filein = e.target.files[0];
+    Papa.parse(filein, {
+        download: true,
+        complete: function (results) {
+            let classDataDict = {};
+            for (let i in results.data) {
+                let row = results.data[i];
+                if (typeof row[0] !== 'undefined') {
+                    classDataDict[`${row[0]} ${row[1]}`] = {
+                        'seasons': row[2].split(";").filter(x => x),
+                        'prereqs': row[3].split(";").filter(x => x),
+                    };
+                }
+            }
+            console.log(classDataDict);
+            initializeNetwork(classDataDict);
+        }
+    });
+}
+
 // initialiseNetwork: void function that initialises network
 // based off of class data
-function initialiseNetwork(myClassDataDict) {
+function initializeNetwork(myClassDataDict) {
     // create nodes
     var nodeList = parseMyClassNodeData(myClassDataDict);
     console.log(nodeList);
@@ -164,15 +190,4 @@ function initialiseNetwork(myClassDataDict) {
     })
 }
 
-
-// Papa.parse("class-data.csv", {
-//     comments: "//",
-//     delimiter: ";; ",
-//     download: true,
-//     complete: function (results) {
-//         // console.log(results.data);
-//         initialiseNetwork(parseCsvData(results.data));
-//     }
-// });
-
-initialiseNetwork({});
+initializeNetwork({});

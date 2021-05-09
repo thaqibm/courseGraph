@@ -40,7 +40,6 @@ Running the code:
     <!-- <script type="module" src="make-graph.js"></script> -->
 
     <h1 id="heading">My Course Graph</h1>
-    <h3 id="sub-heading">For advanced courses, the normal course description is shown instead.</h3>
 
     <div class="container-fluid">
         <div class="row">
@@ -55,25 +54,25 @@ Running the code:
                     <input type="text" id="subjectCode" />
                     <h5>Catalog Number (e.g. 136)</h5>
                     <input type="text" id="catalogNumber" />
-                    <h5>Course Prerequisites (e.g. MATH 135)</h5>
-                    <h6>Separate courses by commas</h6>
+                    <h5>Seasons course offered (e.g. F;W;S)</h5>
+                    <h6>Separate courses by semicolons</h6>
+                    <input type="text" id="courseSeasons" />
+                    <h5>Course Prerequisites (e.g. MATH 136; MATH 138)</h5>
+                    <h6>Separate courses by semicolons</h6>
                     <input type="text" id="coursePrereqs" />
                     <br>
                     <button id="addCourse">Add Course</button>
                 </div>
                 <div class="container-fluid">
                     <h5>Or, alternatively, import class data via a CSV:</h5>
-                    <input type="file" id="classDataFile">
+                    <h6>Each row should be in the form of</h6>
+                    <h6>subjectCode,catalogNumber,courseSeasons,coursePrereqs</h6>
+                    <input type="file" accept="csv" id="classDataFile">
                     <button id="loadFile">Load File</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- <script>
-        addCourse("MATH", "135");
-        console.log('hello!');
-    </script> -->
 
     <!-- Script for graph -->
     <script type="module" src="make-graph.js"></script>
