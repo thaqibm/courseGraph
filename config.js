@@ -1,0 +1,4 @@
+module.exports = {
+    APIKEY : "DBDD4D4D485940C0825CB9F485CE70C3" 
+}
+
