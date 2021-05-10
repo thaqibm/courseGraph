@@ -5,28 +5,6 @@
 
 import { classData } from './classData.js';
 
-// getClassData: custom function to read JSON file, and performs
-// the fn (which takes classData as a parameter) after loading it
-// var classData = {};
-// function getClassData(fn) { 
-//     var xhr = new XMLHttpRequest(); 
-//     xhr.open('GET', 'classData.json', true); 
-//     xhr.responseType = 'blob'; 
-//     xhr.onload = function(e) {  
-//       if (this.status == 200) { 
-//           var file = new File([this.response], 'temp'); 
-//           var fileReader = new FileReader(); 
-//           fileReader.addEventListener('load', function() { 
-//                fn(fileReader.result);
-//           }); 
-//           fileReader.readAsText(file); 
-//       }  
-//     } 
-//     xhr.send(); 
-// } 
-
-// getClassData(console.log);
-
 console.log(classData);
 
 // load classData from file
