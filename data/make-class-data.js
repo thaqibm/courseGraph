@@ -144,10 +144,10 @@ async function main() {
 
     // then, write classData object to classData.json file
     .then(function (classData) {
-        fs.writeFile("public/classData.js", `const classData = ${JSON.stringify(classData)};\nexport {classData};`, (err) => {
+        fs.writeFile("data/classData.json", JSON.stringify(classData), (err) => {
             if (err) throw err;
         })
-        console.log("Class data has been written to classData.js, stored as the constant classData");
+        console.log("Class data has been written to classData.json");
     })
     
     // catch and print any errors
