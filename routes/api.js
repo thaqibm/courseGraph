@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var uwApi = require('../UW_API');
+// var uwApi = require('../UW_API');
 /* GET users listing. */
 
 router.get('/course/:courseName', function(req, res, next) {
