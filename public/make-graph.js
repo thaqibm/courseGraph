@@ -41,6 +41,7 @@ function loadDataFromCSV(e) {
     let filein = e.target.files[0];
     Papa.parse(filein, {
         download: true,
+        skipEmptyLines: true,
         complete: function (results) {
             let classDataDict = {};
             for (let i in results.data) {
