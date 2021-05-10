@@ -1,13 +1,15 @@
 // makes class data using the json class data object instead of the
 // user defined csv
 
-const fs = require('fs')
+import { classData } from './classData.js'
 
-const classData = JSON.parse(fs.readFileSync('./data/classData.json'));
+// const fs = require('fs')
+
+// const classData = JSON.parse(fs.readFileSync('./data/classData.json'));
 
 // load classData from file
 // const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
-// console.log(classData);
+console.log(classData);
 
 const courseSeasonDict = {
     'F': "🍁",

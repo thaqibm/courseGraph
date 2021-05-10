@@ -40,7 +40,6 @@ const throttledQueue = require('throttled-queue');
 const fs = require('fs');
 const fetch = require('node-fetch');
 const config = require("../config");
-const password = require("../password");
 
 const URL = "https://openapi.data.uwaterloo.ca/v3";
 
@@ -144,10 +143,10 @@ async function main() {
 
     // then, write classData object to classData.json file
     .then(function (classData) {
-        fs.writeFile("data/classData.json", JSON.stringify(classData), (err) => {
+        fs.writeFile("public/classData.js", `const classData = ${JSON.stringify(classData)};\nexport { classData };`, (err) => {
             if (err) throw err;
         })
-        console.log("Class data has been written to classData.json");
+        console.log("Class data has been written to classData.js");
     })
     
     // catch and print any errors
