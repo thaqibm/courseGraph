@@ -9,7 +9,6 @@ import { classData } from './classData.js'
 
 // load classData from file
 // const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
-console.log(classData);
 
 const courseSeasonDict = {
     'F': "🍁",
