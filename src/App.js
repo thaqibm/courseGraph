@@ -7,6 +7,7 @@ import ReactDOM from "react-dom";
 import { generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData } from './parse-data.js';
 import { colorLuminance } from './lighten-color.js';
 
+// options for vis graph
 const options = {
   layout: {
     hierarchical: {
@@ -26,14 +27,8 @@ const options = {
   }
 };
 
-// function randomColor() {
-//   const red = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-//   const green = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-//   const blue = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-//   return `#${red}${green}${blue}`;
-// }
-
-function App() {
+// makeGraph: initialises the graph
+function MakeGraph() {
   // const createNode = (x, y) => {
   //   const color = randomColor();
   //   setState(({ graph: { nodes, edges }, counter, ...rest }) => {
@@ -57,6 +52,7 @@ function App() {
   // }
 
   // dict object containing class data
+  // (for now, its "test data")
   const myClassDataDict = {
     "MATH 135": {
       "prereqs": [],
@@ -114,10 +110,11 @@ function App() {
   // revert edges back to normal (ie turn them all back to light grey)
   const revertEdgesToNormal = () => {
     setState(({ graph: { nodes, edges }, ...rest }) => {
-      return { graph: { nodes, edges: edges.map((edge) => {return {...edge, color: '#bdbdbd'}}) }, ...rest };
+      return { graph: { nodes, edges: edges.map((edge) => { return { ...edge, color: '#bdbdbd' } }) }, ...rest };
     });
   }
 
+  // setting up the graph
   const [state, setState] = useState({
     graph: {
       nodes: parseMyClassNodeData(myClassDataDict),
@@ -133,16 +130,53 @@ function App() {
   })
   const { graph, events } = state;
 
-  // const style = {
-  //   height: "640px",
-  //   width: "100%"
-  // }
   return (
     <div id="mynetwork">
       <Graph graph={graph} options={options} events={events} />
     </div>
   );
+}
 
+// main application
+function App() {
+  return (
+    <div id="App">
+      <h1 id="heading">My Course Graph</h1>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <h4>Graph</h4>
+            {MakeGraph()}
+          </div>
+          <div class="col-lg-4">
+            <div class="container-fluid">
+              <h4>Add Course</h4>
+              <h5>Subject Code (e.g. MATH)</h5>
+              <input type="text" id="subjectCode" />
+              <h5>Catalog Number (e.g. 136)</h5>
+              <input type="text" id="catalogNumber" />
+              <h5>Seasons course offered (e.g. F;W;S)</h5>
+              <h6>Separate courses by semicolons</h6>
+              <input type="text" id="courseSeasons" />
+              <h5>Course Prerequisites (e.g. MATH 136; MATH 138)</h5>
+              <h6>Separate courses by semicolons</h6>
+              <input type="text" id="coursePrereqs" />
+              <br />
+              <button id="addCourse">Add Course</button>
+            </div>
+            <div class="container-fluid">
+              <h5>Or, alternatively, import class data via a CSV:</h5>
+              <h6>Each row should be in the form of</h6>
+              <h6>subjectCode,catalogNumber,courseSeasons,coursePrereqs</h6>
+              <input type="file" accept="csv" id="classDataFile" />
+              <button id="loadFile">Load File</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default App;
