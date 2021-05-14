@@ -4,9 +4,8 @@ import Graph from "react-graph-vis";
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { parse as CSVParse } from "papaparse";
-// import { Papa } from 'papaparse';
-// import ReactDOM from "react-dom";
 
+import { classData } from './classData.js';
 import { generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData } from './parse-data.js';
 import { colorLuminance } from './lighten-color.js';
 
@@ -30,19 +29,22 @@ const options = {
   }
 };
 
+// React component for "Add Course" sidebar
 class AddCourseForm extends React.Component {
 
+  // constructor for add course form
   constructor(props) {
     super(props);
     this.state = {
       subjectCode: "",
-      catalogNumber: 0,
+      catalogNumber: "",
       courseSeasons: [],
       coursePrereqs: [],
     }
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
+  // updates state based on changes to inputs
   handleInputChange = (e) => {
     const target = e.target;
     const value = ["subjectCode", "catalogNumber"].includes(target.value)
@@ -53,9 +55,30 @@ class AddCourseForm extends React.Component {
     });
   }
 
+  // for the section where user adds course data manually
   handleSubmit = () => this.props.doFunctionAfterSubmitManual(this.state);
 
+  // for the section where user adds course data using a csv
   loadClassDataFile = this.props.doFunctionAfterSubmitCSV;
+
+  // makes preview of course
+  makePreview = (subjectCode, catalogNumber) => {
+    try {
+      // return generateCourseNode(subjectCode, catalogNumber, courseSeasons).title;
+      let courseData = classData[subjectCode][catalogNumber];
+      let course = courseData[Object.keys(courseData)[0]];
+      return (
+        <Container fluid>
+          <h6>{subjectCode} {catalogNumber} ({course.title})</h6>
+          <p>Course ID: {course.id}</p>
+          <p>{course.description}</p>
+          <p>{course.requirementsDescription}</p>
+        </Container>
+      )
+    } catch (err) {
+      return "Invalid course data; please check that all input fields are formatted correctly";
+    };
+  }
 
   render() {
     return (
@@ -65,6 +88,7 @@ class AddCourseForm extends React.Component {
           <Form.Control
             type="text"
             id="subjectCode"
+            placeholder="e.g. MATH"
             onChange={(e) => this.setState({ subjectCode: e.target.value })}
           />
         </Form.Group>
@@ -73,14 +97,27 @@ class AddCourseForm extends React.Component {
           <Form.Control
             type="text"
             id="catalogNumber"
+            placeholder="e.g. 239"
             onChange={(e) => this.setState({ catalogNumber: e.target.value })}
           />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Course preview</Form.Label>
+          <br />
+          {this.makePreview(this.state.subjectCode, this.state.catalogNumber)}
+          {/* <Form.Control 
+            as="textarea"
+            value={this.makePreview(this.state.subjectCode, this.state.catalogNumber, [])}
+            id="coursePreview"
+            readOnly={true}
+          /> */}
         </Form.Group>
         <Form.Group>
           <Form.Label>Seasons course offered</Form.Label>
           <Form.Control
             type="text"
             id="courseSeasons"
+            placeholder="e.g. F;W;S"
             onChange={(e) => this.setState({ courseSeasons: e.target.value.split(";") })}
           />
         </Form.Group>
@@ -89,6 +126,7 @@ class AddCourseForm extends React.Component {
           <Form.Control
             type="text"
             id="coursePrereqs"
+            placeholder="e.g. MATH 136;MATH 138"
             onChange={(e) => this.setState({ coursePrereqs: e.target.value.split(";") })}
           />
         </Form.Group>
