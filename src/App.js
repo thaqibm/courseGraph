@@ -65,8 +65,58 @@ function App() {
     "MATH 136": {
       "prereqs": ["MATH 135"],
       "seasons": ["F", "W", "S"],
-    }
+    },
+    "MATH 237": {
+      "prereqs": ["MATH 136"],
+      "seasons": ["F", "W", "S"],
+    },
   };
+
+  // highlightEdgesConnectedToNode: highlights edges connected to node (when it is clicked)
+  const highlightEdgesConnectedToNode = (nodeid) => {
+
+    // luminosity constants for how dark/light to make the edges when node clicked
+    const fromLum = -0.4;
+    const toLum = 0;
+
+    setState(({ graph: { nodes, edges }, ...rest }) => {
+      // get clickedNode based on nodeid (match node id with nodeid)
+      let clickedNode = nodes.filter((node) => (node.id === nodeid))[0];
+      console.log(clickedNode);
+      // get edges connected to clickedNode, and the "other" edges not connected to clickedNode
+      let fromEdges = edges.filter((edge) => (edge.from === nodeid));
+      let toEdges = edges.filter((edge) => (edge.to === nodeid));
+      let otherEdges = edges.filter((edge) => !((edge.to === nodeid) || (edge.from === nodeid)));
+      // color outgoing and incoming arrows
+      console.log(fromEdges, toEdges, otherEdges);
+      return {
+        graph: {
+          nodes,
+          edges: otherEdges
+            .concat(fromEdges.map((fromEdge) => {
+              return {
+                ...fromEdge,
+                color: colorLuminance(clickedNode.color.background, fromLum)
+              }
+            }))
+            .concat(toEdges.map((toEdge) => {
+              return {
+                ...toEdge,
+                color: colorLuminance(clickedNode.color.background, toLum)
+              }
+            })),
+        },
+        ...rest
+      };
+    });
+  }
+
+  // revert edges back to normal (ie turn them all back to light grey)
+  const revertEdgesToNormal = () => {
+    setState(({ graph: { nodes, edges }, ...rest }) => {
+      return { graph: { nodes, edges: edges.map((edge) => {return {...edge, color: '#bdbdbd'}}) }, ...rest };
+    });
+  }
 
   const [state, setState] = useState({
     graph: {
@@ -74,16 +124,11 @@ function App() {
       edges: parseMyClassEdgeData(myClassDataDict),
     },
     events: {
-      // select: ({ nodes, edges }) => {
-      //   console.log("Selected nodes:");
-      //   console.log(nodes);
-      //   console.log("Selected edges:");
-      //   console.log(edges);
-      //   alert("Selected node: " + nodes);
-      // },
-      // doubleClick: ({ pointer: { canvas } }) => {
-      //   createNode(canvas.x, canvas.y);
-      // }
+      // when selecting a node, "highlight" it 
+      select: ({ nodes, edges }) => {
+        highlightEdgesConnectedToNode(nodes[0]);
+      },
+      deselectNode: ({ ...other }) => { revertEdgesToNormal() },
     }
   })
   const { graph, events } = state;
