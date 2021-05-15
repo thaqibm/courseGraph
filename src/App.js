@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { parse as CSVParse } from "papaparse";
 
-import { classData } from './classData.js';
+import classData from './classData.json';
 import { generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData } from './parse-data.js';
 import { colorLuminance } from './lighten-color.js';
 
