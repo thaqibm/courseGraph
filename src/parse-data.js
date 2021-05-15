@@ -8,6 +8,20 @@ import classData from './classData.json';
 // load classData from file
 // const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
 
+// getCourseDetails: get details of course from classData
+// returns undefined if subjectCode (or catalogNumber) is undefined in courseData
+const getCourseDetails = (subjectCode, catalogNumber) => {
+    // let courseData = classData[subjectCode][catalogNumber];
+    // return courseData[Object.keys(courseData)[0]];
+    if (! (typeof classData[subjectCode] === 'undefined' || typeof classData[subjectCode][catalogNumber] === 'undefined')) {
+        let courseData = classData[subjectCode][catalogNumber];
+        return courseData[Object.keys(courseData)[0]];
+    }
+    else {
+        return undefined;
+    }
+}
+
 const courseSeasonDict = {
     'F': "🍁",
     'W': "❄️",
@@ -226,6 +240,7 @@ function parseMyClassNodeData(myClassDataDict) {
         return generateCourseNode(c.split(" ")[0], c.split(" ")[1], myClassDataDict[c]['seasons']);
     })
 }
+
 // parseMyClassEdgeData: parses my (ie given) class data, returns list of nodes corresponding
 // to myClassDataDict, which is in the form described above
 function parseMyClassEdgeData(myClassDataDict) {
@@ -246,4 +261,4 @@ function parseMyClassEdgeData(myClassDataDict) {
 
 // console.log(parseMyClassEdgeData({"MATH 135": [], "MATH 136": ["MATH 135"], "MATH 237": ["MATH 135", "MATH 136"]}));
 
-export { generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };
+export { courseSeasonDict, getCourseDetails, generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };
