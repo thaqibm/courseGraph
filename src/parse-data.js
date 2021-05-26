@@ -1,7 +1,12 @@
 // makes class data using the json class data object instead of the
 // user defined csv
 
-import classData from './classData.json';
+import * as gcs from './get-course-data.js';
+
+import basicNodeConfig from './config/basicNodeConfig.json';
+import acadGroupsConfig from './config/academicGroupsConfig.json';
+import acadOrgsConfig from './config/academicOrganizationsConfig.json';
+import subjectCodesConfig from './config/subjectCodesConfig.json';
 
 // const classData = readFileSync('./classData.json');
 
@@ -9,18 +14,6 @@ import classData from './classData.json';
 // const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
 
 // getCourseDetails: get details of course from classData
-// returns undefined if subjectCode (or catalogNumber) is undefined in courseData
-const getCourseDetails = (subjectCode, catalogNumber) => {
-    // let courseData = classData[subjectCode][catalogNumber];
-    // return courseData[Object.keys(courseData)[0]];
-    if (! (typeof classData[subjectCode] === 'undefined' || typeof classData[subjectCode][catalogNumber] === 'undefined')) {
-        let courseData = classData[subjectCode][catalogNumber];
-        return courseData[Object.keys(courseData)[0]];
-    }
-    else {
-        return undefined;
-    }
-}
 
 const courseSeasonDict = {
     'F': "🍁",
@@ -50,167 +43,48 @@ function stringParse(string) {
     }
 }
 
-// generateCourseNode: takes in parameters, generates node for course
-// that can be used in make-graph.js
-function generateCourseNode(subjectCode, catalogNumber, courseSeasons) {
+// generateCourseNode: takes in courseData and courseSeasons,
+// outputs a node object
+function generateCourseNode(course, courseSeasons) {
 
-    let courseData = classData[subjectCode][catalogNumber];
-    let course = courseData[Object.keys(courseData)[0]];
-    // get course seasons
     let symCourseSeasons = courseSeasons
-        .map((letter) => { return courseSeasonDict[letter]; })
+        .map((letter) => courseSeasonDict[letter])
         .join('');
 
     // console.log(courseSeasons);
     // console.log(courseData[Object.keys(courseData)[0]]);
 
     const courseNodeDescription =
-        `${subjectCode} ${catalogNumber} (${course.title})\nCourse ID: ${course.id}\n--------------------------\n${stringParse(course.description)}\n--------------------------\n${(course.requirementsDescription === null) ? "" : stringParse(course.requirementsDescription)}\n`;
+        `${course.subjectCode} ${course.catalogNumber} (${course.title})\nCourse ID: ${course.id}\n--------------------------\n${stringParse(course.description)}\n--------------------------\n${(course.requirementsDescription === null) ? "" : stringParse(course.requirementsDescription)}\n`;
     // console.log(courseNodeDescription);
-    const courseNodeTitle = (subjectCode === "HS") ? subjectCode : `${subjectCode} ${catalogNumber} ${symCourseSeasons}`;
+    const courseNodeTitle = `${course.subjectCode} ${course.catalogNumber} ${symCourseSeasons}`;
     // console.log(courseNodeTitle);
 
+    // "set up" unicode for courseNode acadGroups and acadOrgs configs
+    const nodeAcadGroupsConfig = acadGroupsConfig[course.associatedAcademicGroupCode]["symbolcode"];
+    const nodeAcadOrgsConfig = acadOrgsConfig[course.associatedAcademicOrgCode]["symbolcode"];
     // we can experiment with popups instead of hovering when
     // the node is clicked
     var courseNode = {
-        id: `${subjectCode} ${catalogNumber}`,
+        id: `${course.subjectCode} ${course.catalogNumber}`,
         label: courseNodeTitle,
         title: courseNodeDescription,
-        labelHighLightBold: true,
-        borderWidth: 1.5,
-        font: {
-            face: 'Lato',
-            size: 16,
-            multi: 'html',
-        },
-        nodes: {
-
-        },
-        shapeProperties: {
-            borderRadius: 2.5,
-        }
-    }
-
-    // function to update properties of course node
-    let updateCourseNode = function (courseNode, properties) {
-        return { ...courseNode, ...properties };
-    }
-
-    // we could make this into a switch statement, or even use a csv
-    // to store the properties
-    let colorShapeProperties = {};
-    // console.log(courseSubject);
-    if (subjectCode === "MATH") { // green
-        colorShapeProperties = {
-            color: {
-                background: '#169131',
-                border: 'black',
-                highlight: {
-                    background: '#81f087',
-                    border: 'black',
+        ...basicNodeConfig,
+        ...subjectCodesConfig[course.subjectCode],
+        ...((typeof nodeAcadGroupsConfig === "undefined")
+            ? {}
+            : {
+                shape: 'icon',
+                icon: {
+                    face: "'Font Awesome 5 Free'",
+                    weight: '700',
+                    color: subjectCodesConfig[course.subjectCode]["color"]["background"],
+                    // convert hexadecimal string to unicode
+                    code: String.fromCharCode("0x" + nodeAcadGroupsConfig),
+                    size: 40,
                 }
-            },
-            shape: 'diamond',
-            size: 15,
-        };
+            }),
     }
-    else if (subjectCode === "STAT") { // yellow
-        colorShapeProperties = {
-            color: {
-                background: '#d5db16',
-                border: 'black',
-                highlight: {
-                    background: '#f7fa8c',
-                    border: 'black',
-                }
-            },
-            shape: 'hexagon',
-            size: 15,
-        }
-    }
-    else if (subjectCode === "CS") { // orange
-        colorShapeProperties = {
-            color: {
-                background: '#eb7c28',
-                border: 'black',
-                highlight: {
-                    background: '#edb68c',
-                    border: 'black',
-                }
-            },
-            shape: 'star',
-            size: 15,
-        };
-    }
-    else if (subjectCode === "CO") { // aqua
-        colorShapeProperties = {
-            color: {
-                background: '#0ebfc2',
-                border: 'black',
-                highlight: {
-                    background: '#63e8eb',
-                    border: 'black',
-                }
-            },
-            shape: 'triangleDown',
-            size: 12,
-        };
-    }
-    else if (subjectCode === "PMATH") { // pink
-        colorShapeProperties = {
-            color: {
-                background: '#d40dc0',
-                border: 'black',
-                highlight: {
-                    background: '#f294e9',
-                    border: 'black',
-                }
-            },
-            shape: 'dot',
-            size: 12,
-        }
-    }
-    else if (subjectCode === "HS") { // blue
-        colorShapeProperties = {
-            color: {
-                background: 'blue',
-                border: 'black',
-            },
-            shape: 'dot',
-            size: 8,
-            fixed: true,
-        }
-    }
-    else if (subjectCode === "SPCOM" || subjectCode === "ENGL") { // purple
-        colorShapeProperties = {
-            color: {
-                background: '#661499',
-                border: 'black',
-                highlight: {
-                    background: '#c578f5',
-                    border: 'black',
-                }
-            },
-            shape: 'triangle',
-            size: 12,
-        }
-    }
-    else { // red
-        colorShapeProperties = {
-            color: {
-                background: '#a30b2c',
-                border: 'black',
-                highlight: {
-                    background: '#e66e88',
-                    border: 'black',
-                }
-            },
-            shape: 'square',
-            size: 12,
-        };
-    }
-
-    courseNode = updateCourseNode(courseNode, colorShapeProperties);
 
     return courseNode;
 }
@@ -235,14 +109,39 @@ function generateCourseEdge(subjectCode, catalogNumber, subjectCodePrereq, catal
 // parseMyClassNodeData: parses my (ie given) class data, returns list of nodes corresponding to them
 // myClassDataDict is in the form { <course code>: { prereqs: <list of course prereqs>, seasons: <list of seasons> } }
 // where <course code> = `<subject code> <catalog number>`
-function parseMyClassNodeData(myClassDataDict) {
-    return Object.keys(myClassDataDict).map((c) => {
-        return generateCourseNode(c.split(" ")[0], c.split(" ")[1], myClassDataDict[c]['seasons']);
-    })
+async function parseMyClassNodeData(myClassDataDict) {
+    return gcs.getCurrentTermData()
+        .then((result) => {
+            return Promise.all(
+                Object.keys(myClassDataDict)
+                    .map((course) => gcs.getCourseWithTermCode(
+                        course.split(" ")[0],
+                        course.split(" ")[1],
+                        result.data.termCode
+                    ))
+            );
+        })
+        .then((courseList) => {
+            return courseList
+                .map((course) => {
+                    let courseData = course.data[0];
+                    let courseSeasons = myClassDataDict[`${course.data[0].subjectCode} ${course.data[0].catalogNumber}`].seasons;
+                    return { data: courseData, seasons: courseSeasons };
+                });
+        })
+        .then((courseDataList) => {
+            return courseDataList.map((courseData) => generateCourseNode(courseData.data, courseData.seasons));
+        });
 }
+
+parseMyClassNodeData({
+    "MATH 135": { "prereqs": [], "seasons": ['F', 'W', 'S'] },
+    "MATH 136": { "prereqs": ["MATH 135"], "seasons": ['F', 'W', 'S'] }
+}).then(console.log);
 
 // parseMyClassEdgeData: parses my (ie given) class data, returns list of nodes corresponding
 // to myClassDataDict, which is in the form described above
+// this function is synchronous
 function parseMyClassEdgeData(myClassDataDict) {
     let parsedEdgeData = [];
     for (let code in myClassDataDict) {
@@ -261,4 +160,4 @@ function parseMyClassEdgeData(myClassDataDict) {
 
 // console.log(parseMyClassEdgeData({"MATH 135": [], "MATH 136": ["MATH 135"], "MATH 237": ["MATH 135", "MATH 136"]}));
 
-export { courseSeasonDict, getCourseDetails, generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };
+export { courseSeasonDict, generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };

@@ -2,14 +2,17 @@
 
 import { ExportToCsv } from "export-to-csv";
 import React from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Graph from "react-graph-vis";
 import { parse as CSVParse } from "papaparse";
 
 import AddCourseForm from './AddCourseForm';
 
-import { generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData } from './parse-data.js';
-import { colorLuminance } from './lighten-color.js';
+import { parseMyClassEdgeData, parseMyClassNodeData } from './parse-data.js';
+// import { colorLuminance } from './lighten-color.js';
+import { getCourse } from "./get-course-data";
+
+// import {} from "./create-node-options";
 
 // React Component to export class data as CSV
 class ExportClassData extends React.Component {
@@ -30,20 +33,17 @@ class ExportClassData extends React.Component {
 // React Component for the graph (ie "My Network")
 class App extends React.Component {
 
-  // initial dict for class data
-  myClassDataDict = {
-    // test data
-    // "MATH 135": { "prereqs": [], "seasons": ["F", "W", "S"] },
-    // "MATH 136": { "prereqs": ["MATH 135"], "seasons": ["F", "W", "S"] },
-  };
-
   constructor(props) {
     super(props);
     this.state = {
-      classDataDict: this.myClassDataDict,
+      classDataDict: {
+        // test data (if needed)
+        "MATH 135": { "prereqs": [], "seasons": ['F', 'W', 'S'] },
+        "MATH 136": { "prereqs": ["MATH 135"], "seasons": ['F', 'W', 'S'] }
+      },
       graph: {
-        nodes: parseMyClassNodeData(this.myClassDataDict),
-        edges: parseMyClassEdgeData(this.myClassDataDict),
+        nodes: [],
+        edges: []
       },
       events: {
         // when selecting a node, "highlight" the edges connected to it
@@ -92,6 +92,36 @@ class App extends React.Component {
       },
     };
   };
+
+  componentDidMount() {
+    parseMyClassNodeData(this.state.classDataDict).then((nodes) => {
+      this.setState(({ graph, ...rest }) => {
+        return {
+          graph: {
+            nodes: nodes,
+            edges: parseMyClassEdgeData(this.state.classDataDict),
+          },
+          ...rest
+        }
+      })
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.classDataDict.length === this.state.classDataDict.length) {
+      parseMyClassNodeData(this.state.classDataDict).then((nodes) => {
+        this.setState(({ graph, ...rest }) => {
+          return {
+            graph: {
+              nodes: nodes,
+              edges: parseMyClassEdgeData(this.state.classDataDict),
+            },
+            ...rest
+          }
+        })
+      })
+    }
+  }
 
   // highlightEdgesConnectedToNode: highlights edges connected to node (when it is clicked)
   highlightEdgesConnectedToNode = (nodeid) => {
@@ -163,28 +193,17 @@ class App extends React.Component {
   // add course when "Add Course" button clicked
   addCourse = (state) => {
     const { subjectCode, catalogNumber, courseSeasons, coursePrereqs } = state;
-    const newnode = generateCourseNode(subjectCode, catalogNumber, courseSeasons);
-    const newedges = coursePrereqs.map((cp) => generateCourseEdge(subjectCode, catalogNumber, cp.split(" ")[0], cp.split(" ")[1]));
-    const newcourse = { [subjectCode + " " + catalogNumber]: { "seasons": courseSeasons, "prereqs": coursePrereqs } };
-    console.log(newcourse);
-    this.setState(({ classDataDict, graph: { nodes, edges }, ...rest }) => {
-      return {
-        classDataDict: {
-          ...classDataDict,
-          ...newcourse
-        },
-        graph: {
-          nodes: [
-            ...nodes,
-            newnode
-          ],
-          edges: [
-            ...edges,
-            ...newedges
-          ],
-        },
-        ...rest
-      };
+    getCourse(subjectCode, catalogNumber).then((result) => {
+      const newcourse = { [subjectCode + " " + catalogNumber]: { "seasons": courseSeasons, "prereqs": coursePrereqs } };
+      this.setState(({ classDataDict, graph: { nodes, edges }, ...rest }) => {
+        return {
+          classDataDict: {
+            ...classDataDict,
+            ...newcourse
+          },
+          ...rest
+        };
+      });
     });
   };
 
@@ -205,14 +224,9 @@ class App extends React.Component {
             };
           }
         }
-        console.log(this.myClassDataDict);
-        this.setState(({ classDataDict, graph: { nodes, edges }, ...rest }) => {
+        this.setState(({ classDataDict, ...rest }) => {
           return {
             classDataDict: this.myClassDataDict,
-            graph: {
-              nodes: parseMyClassNodeData(this.myClassDataDict),
-              edges: parseMyClassEdgeData(this.myClassDataDict),
-            },
             ...rest
           }
         });
@@ -220,8 +234,8 @@ class App extends React.Component {
     });
   }
 
+  // export class data in CSV format
   exportClassDataAsCSV = () => {
-    console.log(this.state.classDataDict);
     const data = Object.keys(this.state.classDataDict)
       .map((cid) => [
         cid.split(" ")[0],
@@ -230,7 +244,6 @@ class App extends React.Component {
         this.state.classDataDict[cid]["prereqs"].join(";")
       ]);
 
-    console.log(data);
     const csvExporter = new ExportToCsv({
       fieldSeparator: ',',
       filename: 'classData',

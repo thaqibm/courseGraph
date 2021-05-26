@@ -1,10 +1,28 @@
 import React from 'react';
-import { Container, Row, Col, Form, Button, DropdownButton, Dropdown, ToggleButtonGroup, ToggleButton, Table } from "react-bootstrap";
-import { courseSeasonDict, getCourseDetails } from "./parse-data.js";
-import classData from './classData.json';
+import { Container, Form, Button, DropdownButton, Dropdown, ToggleButtonGroup, ToggleButton } from "react-bootstrap";
+import { courseSeasonDict } from "./parse-data.js";
+import * as gcs from './get-course-data.js';
 
 // React component for dropdown menu for "subject code"
 class SubjectCodeInput extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { subjectCodes: [] };
+    }
+
+    componentDidMount() {
+        gcs.getSubjectList()
+            .then((result) => {
+                this.setState({
+                    subjectCodes: result.data
+                        .sort((subjectA, subjectB) => subjectA.code.localeCompare(subjectB.code)),
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
 
     render() {
         return (
@@ -14,7 +32,14 @@ class SubjectCodeInput extends React.Component {
                 id="subjectCode"
                 onChange={this.props.updateSubjectCodeFn}
             >
-                {["", ...Object.keys(classData)].sort().map((subjectCode) => <option>{subjectCode}</option>)}
+                {
+                    // put empty code:name pair in the dropdown menu
+                    [{ code: "", name: "" }, ...this.state.subjectCodes]
+                        // format options
+                        .map((subject) =>
+                            <option value={subject.code}>{subject.code} - {subject.name}</option>
+                        )
+                }
             </Form.Control>
         )
     }
@@ -24,10 +49,43 @@ class SubjectCodeInput extends React.Component {
 // based on the subjectCode chosen
 class CatalogNumberInput extends React.Component {
 
-    makeOption = (subjectCode, catalogNumber) => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            subjectCode: "",
+            listOfCourses: [],
+        }
+    }
+
+    makeOption = (catalogNumber, title) => {
         return <option value={catalogNumber}>
-            {catalogNumber} - {(catalogNumber === "") ? "" : getCourseDetails(subjectCode, catalogNumber).title}
+            {catalogNumber} - {title}
         </option>
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.subjectCode !== "" && this.props.subjectCode !== prevProps.subjectCode) {
+            gcs.getCurrentTermData()
+                .then((result) => {
+                    return result.data.termCode;
+                })
+                .then((termCode) => {
+                    return gcs.getListOfCourses(this.props.subjectCode, termCode);
+                })
+                .then((result) => {
+                    let listOfCourses = result.data
+                        .map((course) => {
+                            return {
+                                catalogNumber: course.catalogNumber,
+                                title: course.title,
+                            };
+                        })
+                        .sort((courseA, courseB) => courseA.catalogNumber.localeCompare(courseB.catalogNumber));
+                    this.setState({
+                        listOfCourses: listOfCourses
+                    })
+                })
+        }
     }
 
     render() {
@@ -39,13 +97,13 @@ class CatalogNumberInput extends React.Component {
                 onChange={this.props.updateCatalogNumberFn}
             >
                 {
-                    (this.props.chosenSubjectCode === "")
-                        ? ""
-                        : ["", ...Object.keys(classData[this.props.chosenSubjectCode])]
-                            .sort()
-                            .map((catalogNumber) => this.makeOption(this.props.chosenSubjectCode, catalogNumber))
+                    this.state.listOfCourses
+                        // sort by catalogNumber
+                        .sort((courseA, courseB) => courseA.catalogNumber - courseB.catalogNumber)
+                        // make the option objects
+                        .map((course) => this.makeOption(course.catalogNumber, course.title))
                 }
-            </Form.Control>
+            </Form.Control >
         )
     }
 }
@@ -53,9 +111,36 @@ class CatalogNumberInput extends React.Component {
 // React component for dropdown menu for "course preview", which shows a
 // preview of the course
 class CoursePreview extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            courseData: undefined
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.subjectCode !== this.props.subjectCode || prevProps.catalogNumber !== this.props.catalogNumber) {
+            gcs.getCourse(this.props.subjectCode, this.props.catalogNumber)
+                .then((result) => {
+                    this.setState(() => {
+                        return {
+                            courseData: result.data
+                        }
+                    })
+                })
+                .catch((err) => {
+                    this.setState(() => {
+                        return {
+                            courseData: undefined
+                        }
+                    })
+                });
+        }
+    }
+
     render() {
-        const courseDetails = getCourseDetails(this.props.subjectCode, this.props.catalogNumber);
-        if (typeof courseDetails === 'undefined') {
+        if (typeof this.state.courseData === 'undefined') {
             return (
                 <Button
                     readOnly={true}
@@ -73,12 +158,12 @@ class CoursePreview extends React.Component {
 
                 <Dropdown.ItemText>
                     <h5>{this.props.subjectCode} {this.props.catalogNumber}</h5>
-                    <h5>{courseDetails.title}</h5>
-                    <p>Course ID: {courseDetails.id}</p>
+                    <h5>{this.state.courseData.title}</h5>
+                    <p>Course ID: {this.state.courseData.id}</p>
                     <h5>Description</h5>
-                    <p>{courseDetails.description}</p>
+                    <p>{this.state.courseData.description}</p>
                     <h5>Requirements</h5>
-                    <p>{courseDetails.requirementsDescription}</p>
+                    <p>{this.state.courseData.requirementsDescription}</p>
                 </Dropdown.ItemText>
             </DropdownButton>
         )
@@ -178,25 +263,6 @@ class AddCourseForm extends React.Component {
     // for the section where user adds course data using a csv
     loadClassDataFile = this.props.doFunctionAfterSubmitCSV;
 
-    // makes preview of course
-    makePreview = (subjectCode, catalogNumber) => {
-        try {
-            // return generateCourseNode(subjectCode, catalogNumber, courseSeasons).title;
-            let courseData = classData[subjectCode][catalogNumber];
-            let course = courseData[Object.keys(courseData)[0]];
-            return (
-                <Container fluid>
-                    <h6>{subjectCode} {catalogNumber} ({course.title})</h6>
-                    <p>Course ID: {course.id}</p>
-                    <p>{course.description}</p>
-                    <p>{course.requirementsDescription}</p>
-                </Container>
-            )
-        } catch (err) {
-            return "Invalid course data; please check that all input fields are formatted correctly";
-        };
-    }
-
     render() {
         return (
             <Container>
@@ -211,7 +277,7 @@ class AddCourseForm extends React.Component {
                     <Form.Group>
                         <Form.Label>Catalog Number</Form.Label>
                         <CatalogNumberInput
-                            chosenSubjectCode={this.state.subjectCode}
+                            subjectCode={this.state.subjectCode}
                             updateCatalogNumberFn={(e) => this.setState({ catalogNumber: e.target.value })}
                         />
                     </Form.Group>
@@ -237,7 +303,7 @@ class AddCourseForm extends React.Component {
                             })}
                         />
                     </Form.Group>
-                    <AddCourseButton 
+                    <AddCourseButton
                         chosenSubjectCode={this.state.subjectCode}
                         chosenCatalogNumber={this.state.catalogNumber}
                         handleSubmit={() => this.props.doFunctionAfterSubmitManual(this.state)}
