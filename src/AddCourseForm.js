@@ -1,8 +1,7 @@
 import React from 'react';
 import { Container, Form, Button, DropdownButton, Dropdown, ToggleButtonGroup, ToggleButton } from "react-bootstrap";
-import { courseSeasonDict, getCourseDetails } from "./parse-data.js";
+import { courseSeasonDict } from "./parse-data.js";
 import * as gcs from './get-course-data.js';
-import classData from './classData.json';
 
 // React component for dropdown menu for "subject code"
 class SubjectCodeInput extends React.Component {
@@ -13,16 +12,16 @@ class SubjectCodeInput extends React.Component {
     }
 
     componentDidMount() {
-        // gcs.getSubjectList((result) => {
-        //     this.setState({ subjectCodes: result.data });
-        // })
         gcs.getSubjectList()
             .then((result) => {
-                this.setState({ 
+                this.setState({
                     subjectCodes: result.data
-                        .sort((subjectA, subjectB) => subjectA.code.localeCompare(subjectB.code)), 
+                        .sort((subjectA, subjectB) => subjectA.code.localeCompare(subjectB.code)),
                 });
-            });
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 
     render() {
@@ -112,9 +111,36 @@ class CatalogNumberInput extends React.Component {
 // React component for dropdown menu for "course preview", which shows a
 // preview of the course
 class CoursePreview extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            courseData: undefined
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.subjectCode !== this.props.subjectCode || prevProps.catalogNumber !== this.props.catalogNumber) {
+            gcs.getCourse(this.props.subjectCode, this.props.catalogNumber)
+                .then((result) => {
+                    this.setState(() => {
+                        return {
+                            courseData: result.data
+                        }
+                    })
+                })
+                .catch((err) => {
+                    this.setState(() => {
+                        return {
+                            courseData: undefined
+                        }
+                    })
+                });
+        }
+    }
+
     render() {
-        const courseDetails = getCourseDetails(this.props.subjectCode, this.props.catalogNumber);
-        if (typeof courseDetails === 'undefined') {
+        if (typeof this.state.courseData === 'undefined') {
             return (
                 <Button
                     readOnly={true}
@@ -132,12 +158,12 @@ class CoursePreview extends React.Component {
 
                 <Dropdown.ItemText>
                     <h5>{this.props.subjectCode} {this.props.catalogNumber}</h5>
-                    <h5>{courseDetails.title}</h5>
-                    <p>Course ID: {courseDetails.id}</p>
+                    <h5>{this.state.courseData.title}</h5>
+                    <p>Course ID: {this.state.courseData.id}</p>
                     <h5>Description</h5>
-                    <p>{courseDetails.description}</p>
+                    <p>{this.state.courseData.description}</p>
                     <h5>Requirements</h5>
-                    <p>{courseDetails.requirementsDescription}</p>
+                    <p>{this.state.courseData.requirementsDescription}</p>
                 </Dropdown.ItemText>
             </DropdownButton>
         )
@@ -236,25 +262,6 @@ class AddCourseForm extends React.Component {
 
     // for the section where user adds course data using a csv
     loadClassDataFile = this.props.doFunctionAfterSubmitCSV;
-
-    // makes preview of course
-    makePreview = (subjectCode, catalogNumber) => {
-        try {
-            // return generateCourseNode(subjectCode, catalogNumber, courseSeasons).title;
-            let courseData = classData[subjectCode][catalogNumber];
-            let course = courseData[Object.keys(courseData)[0]];
-            return (
-                <Container fluid>
-                    <h6>{subjectCode} {catalogNumber} ({course.title})</h6>
-                    <p>Course ID: {course.id}</p>
-                    <p>{course.description}</p>
-                    <p>{course.requirementsDescription}</p>
-                </Container>
-            )
-        } catch (err) {
-            return "Invalid course data; please check that all input fields are formatted correctly";
-        };
-    }
 
     render() {
         return (

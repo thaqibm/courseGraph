@@ -54,6 +54,11 @@ export async function getCourseWithTermCode(subjectCode, catalogNumber, termcode
     return axios.get(`${URL}/Courses/${termcode}/${subjectCode}/${catalogNumber}`, { headers: { "X-API-KEY": APIKEY } });
 }
 
+// get list of academic organizations
+export async function getListAcadOrgs() {
+    return axios.get(`${URL}/AcademicOrganizations`, { headers: { "X-API-KEY": APIKEY } });
+}
+
 export async function getCourse(subjectCode, catalogNumber) {
     return getCurrentTermData().then((result) => {
         return result.data.termCode;

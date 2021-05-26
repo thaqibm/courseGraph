@@ -1,1 +1,352 @@
-{"ACC":"f1ec","AHS":"f479","CS":"f109","MAT":"f52c","MATHDEAN":"f52c"}
+{
+    "ACC": {
+        "name": "ACC",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "AHS": {
+        "name": "AHS",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "AHSDEAN": {
+        "name": "AHSDEAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "AMATH": {
+        "name": "AMATH",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ANTH": {
+        "name": "ANTH",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ARCH": {
+        "name": "ARCH",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ART": {
+        "name": "ART",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ARTSDEAN": {
+        "name": "ARTSDEAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "BIOL": {
+        "name": "BIOL",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CBET": {
+        "name": "CBET",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CECS": {
+        "name": "CECA",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CGC": {
+        "name": "CGC",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CHE": {
+        "name": "CH E",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CHEM": {
+        "name": "CHEM",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CIVE": {
+        "name": "CIVE",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CLASSICS": {
+        "name": "CLASSICS",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CO": {
+        "name": "C&O",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "CS": {
+        "name": "CS",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "EARTH": {
+        "name": "EARTHENV",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ECE": {
+        "name": "E&CE",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ECON": {
+        "name": "ECON",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ENG": {
+        "name": "ENG",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ENGDEAN": {
+        "name": "ENGDEAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ENGL": {
+        "name": "ENGL",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ENV": {
+        "name": "ENV",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ENVDEAN": {
+        "name": "ENVDEAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ERS": {
+        "name": "ERS",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "FINE": {
+        "name": "FINE",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "FR": {
+        "name": "FR",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "GEOG": {
+        "name": "GEOG",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "GERSLAV": {
+        "name": "GER&SLAV",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "GRAD": {
+        "name": "GRAD",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "GRADDEAN": {
+        "name": "Grad Dean",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "HIST": {
+        "name": "HIST",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "HLTHGERON": {
+        "name": "PUBHLTH",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ICR": {
+        "name": "ICR",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "IS": {
+        "name": "IS",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "KI": {
+        "name": "KI",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "KIN": {
+        "name": "KIN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "MAT": {
+        "name": "MAT",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "MATHDEAN": {
+        "name": "MATHDEAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "ME": {
+        "name": "ME",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "MSCI": {
+        "name": "M SCI",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "OPTOM": {
+        "name": "OPTOM",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PHARM": {
+        "name": "PHARM",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PHIL": {
+        "name": "PHIL",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PHYS": {
+        "name": "PHYSASTR",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PLAN": {
+        "name": "PLAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PMATH": {
+        "name": "PMATH",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PSCI": {
+        "name": "PSCI",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "PSYCH": {
+        "name": "PSYCH",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "REC": {
+        "name": "REC",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "REN": {
+        "name": "REN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "RS": {
+        "name": "RS",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SCI": {
+        "name": "SCI",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SCIDEAN": {
+        "name": "SCIDEAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SEED": {
+        "name": "SEED",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SOC": {
+        "name": "SOC",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SPAN": {
+        "name": "SPAN",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "STATACTSC": {
+        "name": "STAT&ACTSC",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "STJ": {
+        "name": "STJ",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "STP": {
+        "name": "STP",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "STV": {
+        "name": "STV",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SYDE": {
+        "name": "SY DE",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "THC": {
+        "name": "THC",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "UW": {
+        "name": "UW",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "VPA": {
+        "name": "VPA",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "WS": {
+        "name": "W S",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "SIDB": {
+        "name": "SIDB",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    },
+    "DRAMA": {
+        "name": "DRAMA",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    }
+}

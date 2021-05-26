@@ -2,7 +2,6 @@
 // user defined csv
 
 import * as gcs from './get-course-data.js';
-import classData from './classData.json';
 
 import basicNodeConfig from './config/basicNodeConfig.json';
 import acadOrgsConfig from './config/academicOrganizationsConfig.json';
@@ -14,18 +13,6 @@ import subjectCodesConfig from './config/subjectCodesConfig.json';
 // const classData = JSON.parse(fs.readFileSync('./data/classData.json').toString());
 
 // getCourseDetails: get details of course from classData
-// returns undefined if subjectCode (or catalogNumber) is undefined in courseData
-const getCourseDetails = (subjectCode, catalogNumber) => {
-    // let courseData = classData[subjectCode][catalogNumber];
-    // return courseData[Object.keys(courseData)[0]];
-    if (!(typeof classData[subjectCode] === 'undefined' || typeof classData[subjectCode][catalogNumber] === 'undefined')) {
-        let courseData = classData[subjectCode][catalogNumber];
-        return courseData[Object.keys(courseData)[0]];
-    }
-    else {
-        return undefined;
-    }
-}
 
 const courseSeasonDict = {
     'F': "🍁",
@@ -171,4 +158,4 @@ function parseMyClassEdgeData(myClassDataDict) {
 
 // console.log(parseMyClassEdgeData({"MATH 135": [], "MATH 136": ["MATH 135"], "MATH 237": ["MATH 135", "MATH 136"]}));
 
-export { courseSeasonDict, getCourseDetails, generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };
+export { courseSeasonDict, generateCourseNode, generateCourseEdge, parseMyClassEdgeData, parseMyClassNodeData };
