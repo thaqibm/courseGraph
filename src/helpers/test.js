@@ -18,16 +18,25 @@ async function getCurrentTermData() {
     return axios.get(`${URL}/Terms/current`, { headers: { "X-API-KEY": APIKEY } });
 }
 
-async function getListOfCourses(subjectCode, termcode) {
+async function getListOfCoursesH(subjectCode, termcode) {
     return axios.get(`${URL}/Courses/${termcode}/${subjectCode}`, { headers: { "X-API-KEY": APIKEY } });
 }
 
-async function getListOfCoursesWithoutTermCode(subjectCode, callback) {
-    getCurrentTermData((result) => {
-        console.log(result);
-        console.log(result.data.termCode);
-        getListOfCourses(subjectCode, result.data.termCode, callback);
-    });
+// get list of courses with subject code
+async function getListOfCourses(subjectCode) {
+    return getCurrentTermData()
+        .then((result) => {
+            return result.data.termCode;
+        })
+        .then((termCode) => {
+            return getListOfCoursesH(subjectCode, termCode);
+        })
+        .then((result) => {
+            return result.data;
+        })
+        .catch((err) => {
+            return [];
+        })
 }
 
 async function getSubjectList() {
@@ -36,32 +45,19 @@ async function getSubjectList() {
 
 // getListOfCoursesWithoutTermCode("ARABIC", console.log);
 
-async function t1() {
-    console.log(1);
-    return 2;
-}
-
-async function t2() {
-    await t1().then((result) => {
-        console.log("a is" + result);
-        return 3;
-    }).then((result) => {
-        console.log("b is" + result);
-        return 4;
-    })
-}
-
-async function t3() {
-    await t2().then((result) => {
-        console.log("c is" + result);
-        return 5;
-    })
-}
-
-// t3().then((result) => console.log("d is" + result));
-
-getListAcadOrgs().then((result) => {
-    console.log(result.data);
-})
+getSubjectList().then((result) => {
+    const list = result.data.map((subject) => getListOfCourses(subject.code));
+    // console.log(list);
+    return Promise.all(list);
+}).then((matrix) => {
+    const dict = {};
+    for (let i in matrix) {
+        for (let j in matrix[i]) {
+            // console.log(matrix[i]);
+            dict[matrix[i][j].associatedAcademicGroupCode] = 1;
+        }
+    }
+    return Object.keys(dict);
+}).then(console.log);
 
 

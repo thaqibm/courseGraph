@@ -4,6 +4,7 @@
 import * as gcs from './get-course-data.js';
 
 import basicNodeConfig from './config/basicNodeConfig.json';
+import acadGroupsConfig from './config/academicGroupsConfig.json';
 import acadOrgsConfig from './config/academicOrganizationsConfig.json';
 import subjectCodesConfig from './config/subjectCodesConfig.json';
 
@@ -59,8 +60,9 @@ function generateCourseNode(course, courseSeasons) {
     const courseNodeTitle = `${course.subjectCode} ${course.catalogNumber} ${symCourseSeasons}`;
     // console.log(courseNodeTitle);
 
-    // "set up" unicode for courseNode acadOrgs config
-    const nodeAcadOrgsConfig = acadOrgsConfig[course.associatedAcademicOrgCode];
+    // "set up" unicode for courseNode acadGroups and acadOrgs configs
+    const nodeAcadGroupsConfig = acadGroupsConfig[course.associatedAcademicGroupCode]["symbolcode"];
+    const nodeAcadOrgsConfig = acadOrgsConfig[course.associatedAcademicOrgCode]["symbolcode"];
     // we can experiment with popups instead of hovering when
     // the node is clicked
     var courseNode = {
@@ -69,7 +71,7 @@ function generateCourseNode(course, courseSeasons) {
         title: courseNodeDescription,
         ...basicNodeConfig,
         ...subjectCodesConfig[course.subjectCode],
-        ...((typeof nodeAcadOrgsConfig === "undefined")
+        ...((typeof nodeAcadGroupsConfig === "undefined")
             ? {}
             : {
                 shape: 'icon',
@@ -78,7 +80,7 @@ function generateCourseNode(course, courseSeasons) {
                     weight: '700',
                     color: subjectCodesConfig[course.subjectCode]["color"]["background"],
                     // convert hexadecimal string to unicode
-                    code: String.fromCharCode("0x" + nodeAcadOrgsConfig),
+                    code: String.fromCharCode("0x" + nodeAcadGroupsConfig),
                     size: 40,
                 }
             }),

@@ -99,21 +99,36 @@ function makeListAcadOrgsConfig() {
         // manually insert the symbol I want to represent the
         // academic organization
         const symbolCodeDict = {
-            ACC: "f1ec",        // calculator
-            AHS: "f479",        // first-aid
-            AHSDEAN: "f479",    // first-aid
-            CS: "f109",         // desktop
-            MAT: "f52c",        // equals
-            MATHDEAN: "f52c",   // equals
+            "ACC": {
+                "name": "ACC",
+                "symbolcode": "f1ec",
+                "symbolname": "calculator"
+            },
+            "AHS": {
+                "name": "AHS",
+                "symbolcode": "f479",
+                "symbolname": "first-aid"
+            },
+            "AHSDEAN": {
+                "name": "AHSDEAN",
+                "symbolcode": "f479",
+                "symbolname": "first-aid"
+            },
+            // CS: "f109",         // desktop
+            // MAT: "f52c",        // equals
+            // MATHDEAN: "f52c",   // equals
         }
-    
+        
+        console.log(result.data[0]);
         for (let i in result.data) {
             acadOrgsConfig[result.data[i].code] = {
-                name: result.data[i].name,
+                name: result.data[i].descriptionFormal,
                 symbolcode: "f111",
                 symbolname: "circle",
             };
         }
+
+        // acadOrgsConfig = {...acadOrgsConfig, ...symbolCodeDict};
     
         // write config object to json file
         fs.writeFileSync(
@@ -123,6 +138,8 @@ function makeListAcadOrgsConfig() {
         console.log("JSON config file for academic organizations created");
     })
 }
+
+// makeListAcadOrgsConfig();
 
 // make config for subject codes
 function makeSubjectCodesConfig() {

@@ -1,0 +1,72 @@
+{
+    "ART": {
+        "name": "Arts",
+        "symbolcode": "f53f",
+        "symbolname": "palette"
+    },
+    "AHS": {
+        "name": "Applied Health Sciences",
+        "symbolcode": "f21e",
+        "symbolname": "heartbeat"
+    },
+    "CGC": {
+        "name": "Conrad Grebel",
+        "symbolcode": "f51d",
+        "symbolname": "church"
+    },
+    "ENG": {
+        "name": "Engineering",
+        "symbolcode": "f0ad",
+        "symbolname": "wrench"
+    },
+    "ENV": {
+        "name": "Environment",
+        "symbolcode": "f06c",
+        "symbolname": "leaf"
+    },
+    "GRAD": {
+        "name": "Graduate Courses",
+        "symbolcode": "f19d",
+        "symbolname": "graduation-cap"
+    },
+    "HEA": {
+        "name": "Health",
+        "symbolcode": "f479",
+        "symbolname": "first-aid"
+    },
+    "MAT": {
+        "name": "Mathematics",
+        "symbolcode": "f529",
+        "symbolname": "divide"
+    },
+    "REN": {
+        "name": "Renison - Social Work",
+        "symbolcode": "f500",
+        "symbolname": "user-friends"
+    },
+    "SCI": {
+        "name": "Science",
+        "symbolcode": "f0c3",
+        "symbolname": "flask"
+    },
+    "STJ": {
+        "name": "St Jerome's University College",
+        "symbolcode": "f51d",
+        "symbolname": "church"
+    },
+    "STP": {
+        "name": "St Paul's University College",
+        "symbolcode": "f51d",
+        "symbolname": "church"
+    },
+    "THL": {
+        "name": "Theology",
+        "symbolcode": "f654",
+        "symbolname": "cross"
+    },
+    "VPA": {
+        "name": "Interdisciplinary Studies (VP, Academic)",
+        "symbolcode": "f111",
+        "symbolname": "circle"
+    }
+}
