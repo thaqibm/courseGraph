@@ -21,332 +21,332 @@
     },
     "ANTH": {
         "name": "Anthropology",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f54c",
+        "symbolname": "skull"
     },
     "ARCH": {
         "name": "Architecture - School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f66f",
+        "symbolname": "landmark"
     },
     "ART": {
         "name": "Arts",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f53f",
+        "symbolname": "palette"
     },
     "ARTSDEAN": {
         "name": "Dean of Arts",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f53f",
+        "symbolname": "palette"
     },
     "BIOL": {
         "name": "Biology",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f06c",
+        "symbolname": "leaf"
     },
     "CBET": {
         "name": "Conrad School of Entrepreneurship and Business",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f508",
+        "symbolname": "user-tie"
     },
     "CECS": {
         "name": "Co-operative Education & Career Action",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f508",
+        "symbolname": "user-tie"
     },
     "CGC": {
         "name": "Conrad Grebel University College",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f51d",
+        "symbolname": "church"
     },
     "CHE": {
         "name": "Chemical Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5d2",
+        "symbolname": "atom"
     },
     "CHEM": {
         "name": "Chemistry",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f0c3",
+        "symbolname": "flask"
     },
     "CIVE": {
         "name": "Civil and Environmental Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f4d8",
+        "symbolname": "seedling"
     },
     "CLASSICS": {
         "name": "Classical Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f56b",
+        "symbolname": "feather-alt"
     },
     "CO": {
         "name": "Combinatorics & Optimization",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f1e0",
+        "symbolname": "share-alt"
     },
     "CS": {
         "name": "Computer Science - David R. Cheriton School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5fc",
+        "symbolname": "laptop-code"
     },
     "EARTH": {
         "name": "Earth and Environmental Sciences",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f57d",
+        "symbolname": "globe-americas"
     },
     "ECE": {
         "name": "Electrical & Computer Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5df",
+        "symbolname": "car-battery"
     },
     "ECON": {
         "name": "Economics",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f555",
+        "symbolname": "wallet"
     },
     "ENG": {
         "name": "Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f7d9",
+        "symbolname": "tools"
     },
     "ENGDEAN": {
         "name": "Dean of Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f7d9",
+        "symbolname": "tools"
     },
     "ENGL": {
         "name": "English Language & Literature",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f02d",
+        "symbolname": "book"
     },
     "ENV": {
         "name": "Environment",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f4d8",
+        "symbolname": "seedling"
     },
     "ENVDEAN": {
         "name": "Dean of Environment",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f4d8",
+        "symbolname": "seedling"
     },
     "ERS": {
         "name": "Environment, Resources & Sustainability, School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f4d8",
+        "symbolname": "seedling"
     },
     "FINE": {
         "name": "Fine Arts",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f1fc",
+        "symbolname": "paint-brush"
     },
     "FR": {
         "name": "French Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f024",
+        "symbolname": "flag"
     },
     "GEOG": {
         "name": "Geography & Environmental Management",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f57d",
+        "symbolname": "globe-americas"
     },
     "GERSLAV": {
         "name": "Germanic & Slavic Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f024",
+        "symbolname": "flag"
     },
     "GRAD": {
         "name": "Graduate Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19d",
+        "symbolname": "graduation-cap"
     },
     "GRADDEAN": {
         "name": "Graduate Dean",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19d",
+        "symbolname": "graduation-cap"
     },
     "HIST": {
         "name": "History",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f66f",
+        "symbolname": "landmark"
     },
     "HLTHGERON": {
         "name": "Public Health and Health Systems - School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f479",
+        "symbolname": "first-aid"
     },
     "ICR": {
         "name": "Institute for Computer Research",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5fc",
+        "symbolname": "laptop-code"
     },
     "IS": {
         "name": "Independent Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f007",
+        "symbolname": "user"
     },
     "KI": {
         "name": "Knowledge Integration",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f007",
+        "symbolname": "user"
     },
     "KIN": {
         "name": "Kinesiology",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f554",
+        "symbolname": "walking"
     },
     "MAT": {
         "name": "Math",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f067",
+        "symbolname": "plus"
     },
     "MATHDEAN": {
         "name": "Dean of Mathematics",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f067",
+        "symbolname": "plus"
     },
     "ME": {
         "name": "Mechanical and Mechatronics Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f085",
+        "symbolname": "cogs"
     },
     "MSCI": {
         "name": "Management Sciences",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f0b1",
+        "symbolname": "briefcase"
     },
     "OPTOM": {
         "name": "Optometry & Vision Science - School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f06e",
+        "symbolname": "eye"
     },
     "PHARM": {
         "name": "Pharmacy - School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f486",
+        "symbolname": "prescription-bottle-alt"
     },
     "PHIL": {
         "name": "Philosophy",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f02d",
+        "symbolname": "book"
     },
     "PHYS": {
         "name": "Physics & Astronomy",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5d2",
+        "symbolname": "atom"
     },
     "PLAN": {
         "name": "Planning - School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f66f",
+        "symbolname": "landmark"
     },
     "PMATH": {
         "name": "Pure Mathematics",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f529",
+        "symbolname": "divide"
     },
     "PSCI": {
         "name": "Political Science",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f772",
+        "symbolname": "vote-yea"
     },
     "PSYCH": {
         "name": "Psychology",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5dc",
+        "symbolname": "brain"
     },
     "REC": {
         "name": "Recreation & Leisure Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f5ca",
+        "symbolname": "umbrella-beach"
     },
     "REN": {
         "name": "Renison University College",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19c",
+        "symbolname": "university"
     },
     "RS": {
         "name": "Religious Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f647",
+        "symbolname": "bible"
     },
     "SCI": {
         "name": "Science",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f0c3",
+        "symbolname": "flask"
     },
     "SCIDEAN": {
         "name": "Dean of Science Office",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f0c3",
+        "symbolname": "flask"
     },
     "SEED": {
         "name": "Environment, Enterprise & Development - School of",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f4d8",
+        "symbolname": "seedling"
     },
     "SOC": {
         "name": "Sociology and Legal Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f0e3",
+        "symbolname": "gavel"
     },
     "SPAN": {
         "name": "Spanish & Latin American Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f024",
+        "symbolname": "flag"
     },
     "STATACTSC": {
         "name": "Statistics & Actuarial Science",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f080",
+        "symbolname": "chart-bar"
     },
     "STJ": {
         "name": "St Jerome's University",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19c",
+        "symbolname": "university"
     },
     "STP": {
         "name": "St Paul's College",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19c",
+        "symbolname": "university"
     },
     "STV": {
         "name": "Society, Technology & Values Centre",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19c",
+        "symbolname": "university"
     },
     "SYDE": {
         "name": "Systems Design Engineering",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f085",
+        "symbolname": "cogs"
     },
     "THC": {
         "name": "Theatre Centre",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f630",
+        "symbolname": "theater-masks"
     },
     "UW": {
         "name": "University of Waterloo",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19c",
+        "symbolname": "university"
     },
     "VPA": {
         "name": "Interdisciplinary Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f19c",
+        "symbolname": "university"
     },
     "WS": {
         "name": "Women's Studies",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f221",
+        "symbolname": "venus"
     },
     "SIDB": {
         "name": "Stratford School of Interaction Design & Business",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f0b1",
+        "symbolname": "briefcase"
     },
     "DRAMA": {
         "name": "Communication Arts",
-        "symbolcode": "f111",
-        "symbolname": "circle"
+        "symbolcode": "f086",
+        "symbolname": "comments"
     }
 }
