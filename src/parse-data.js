@@ -84,6 +84,19 @@ function generateCourseNode(course, courseSeasons) {
                     size: 40,
                 }
             }),
+        ...((nodeAcadOrgsConfig === "f111")
+            ? {}
+            : {
+                shape: 'icon',
+                icon: {
+                    face: "'Font Awesome 5 Free'",
+                    weight: '700',
+                    color: subjectCodesConfig[course.subjectCode]["color"]["background"],
+                    // convert hexadecimal string to unicode
+                    code: String.fromCharCode("0x" + nodeAcadOrgsConfig),
+                    size: 40,
+                }
+            }),
     }
 
     return courseNode;
