@@ -1,7 +1,7 @@
 // // helper functions to retrieve course data using the UW API
 
 import * as axios from 'axios';
-import {APIKEY} from "./config";
+import {APIKEY} from "../config/config";
 
 const URL = "https://openapi.data.uwaterloo.ca/v3";
 

@@ -7,6 +7,7 @@ import Graph from "react-graph-vis";
 import { parse as CSVParse } from "papaparse";
 
 import AddCourseForm from './AddCourseForm';
+import CourseDescription from './CourseDescription';
 
 import { parseMyClassEdgeData, parseMyClassNodeData } from './parse-data.js';
 // import { colorLuminance } from './lighten-color.js';
@@ -45,14 +46,35 @@ class App extends React.Component {
         nodes: [],
         edges: []
       },
+      clicked: {
+        node: undefined,
+        edge: undefined,
+      },
       events: {
         // when selecting a node, "highlight" the edges connected to it
         select: ({ nodes, edges }) => {
-          this.highlightEdgesConnectedToNode(nodes[0]);
+          this.setState(({clicked, ...rest}) => {
+            return {
+              clicked: {
+                node: nodes[0],
+                edge: edges[0],
+              },
+              ...rest
+            }
+          })
+          // this.highlightEdgesConnectedToNode(nodes[0]);
         },
         // when deselecting a node, "revert" the "selected" edges to "normal"
         deselectNode: ({ ...other }) => {
-          this.revertEdgesToNormal();
+          this.setState(({clicked, ...rest}) => {
+            return {
+              clicked: {
+                node: undefined,
+                edge: undefined,
+              },
+              ...rest
+            }
+          })
         },
         // stabilized: ({ iterations }) => {
         //   console.log(iterations);
@@ -254,27 +276,36 @@ class App extends React.Component {
 
   render() {
     return (
-      <Container id="App">
-        <h1 id="heading">My Course Graph</h1>
-        <Container fluid>
-          <Row>
-            <Col lg={8}>
-              <Container id="mynetwork">
-                <Graph graph={this.state.graph} options={this.state.options} events={this.state.events} />
-              </Container>
-              {/* <MyNetwork /> */}
-            </Col>
-            <Col lg={4}>
-              <AddCourseForm
-                doFunctionAfterSubmitManual={this.addCourse}
-                doFunctionAfterSubmitCSV={this.loadCoursesFromData}
-              />
-              <ExportClassData
-                doFunction={this.exportClassDataAsCSV}
-              />
-            </Col>
-          </Row>
-        </Container>
+      <Container id="App" fluid>
+        <Row>
+          <Col>
+            <h1 id="website-heading">My Course Graph</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={8}>
+            <Container id="mynetwork">
+              <Graph graph={this.state.graph} options={this.state.options} events={this.state.events} />
+            </Container>
+          </Col>
+          <Col lg={4}>
+            <AddCourseForm
+              doFunctionAfterSubmitManual={this.addCourse}
+              doFunctionAfterSubmitCSV={this.loadCoursesFromData}
+            />
+            <ExportClassData
+              doFunction={this.exportClassDataAsCSV}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={9} id="course-description">
+            <CourseDescription
+              classDataDict={this.state.classDataDict}
+              course={this.state.clicked.node}
+            />
+          </Col>
+        </Row>
       </Container>
     );
   }

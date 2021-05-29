@@ -3,10 +3,10 @@
 
 import * as gcs from './get-course-data.js';
 
-import basicNodeConfig from './config/basicNodeConfig.json';
-import acadGroupsConfig from './config/academicGroupsConfig.json';
-import acadOrgsConfig from './config/academicOrganizationsConfig.json';
-import subjectCodesConfig from './config/subjectCodesConfig.json';
+import basicNodeConfig from '../config/basicNodeConfig.json';
+import acadGroupsConfig from '../config/academicGroupsConfig.json';
+import acadOrgsConfig from '../config/academicOrganizationsConfig.json';
+import subjectCodesConfig from '../config/subjectCodesConfig.json';
 
 // const classData = readFileSync('./classData.json');
 
@@ -50,27 +50,22 @@ function generateCourseNode(course, courseSeasons) {
     let symCourseSeasons = courseSeasons
         .map((letter) => courseSeasonDict[letter])
         .join('');
-
-    // console.log(courseSeasons);
-    // console.log(courseData[Object.keys(courseData)[0]]);
-
-    const courseNodeDescription =
-        `${course.subjectCode} ${course.catalogNumber} (${course.title})\nCourse ID: ${course.id}\n--------------------------\n${stringParse(course.description)}\n--------------------------\n${(course.requirementsDescription === null) ? "" : stringParse(course.requirementsDescription)}\n`;
-    // console.log(courseNodeDescription);
+    
+    // title for course node
     const courseNodeTitle = `${course.subjectCode} ${course.catalogNumber} ${symCourseSeasons}`;
-    // console.log(courseNodeTitle);
 
     // "set up" unicode for courseNode acadGroups and acadOrgs configs
     const nodeAcadGroupsConfig = acadGroupsConfig[course.associatedAcademicGroupCode]["symbolcode"];
     const nodeAcadOrgsConfig = acadOrgsConfig[course.associatedAcademicOrgCode]["symbolcode"];
-    // we can experiment with popups instead of hovering when
-    // the node is clicked
+
     var courseNode = {
         id: `${course.subjectCode} ${course.catalogNumber}`,
         label: courseNodeTitle,
-        title: courseNodeDescription,
+        // configurations for "generic" default basic node
         ...basicNodeConfig,
+        // configurations for subject code
         ...subjectCodesConfig[course.subjectCode],
+        // configurations for academic group
         ...((typeof nodeAcadGroupsConfig === "undefined")
             ? {}
             : {
@@ -84,6 +79,7 @@ function generateCourseNode(course, courseSeasons) {
                     size: 40,
                 }
             }),
+        // configurations for academic organization
         ...((nodeAcadOrgsConfig === "f111")
             ? {}
             : {
@@ -146,11 +142,6 @@ async function parseMyClassNodeData(myClassDataDict) {
             return courseDataList.map((courseData) => generateCourseNode(courseData.data, courseData.seasons));
         });
 }
-
-parseMyClassNodeData({
-    "MATH 135": { "prereqs": [], "seasons": ['F', 'W', 'S'] },
-    "MATH 136": { "prereqs": ["MATH 135"], "seasons": ['F', 'W', 'S'] }
-}).then(console.log);
 
 // parseMyClassEdgeData: parses my (ie given) class data, returns list of nodes corresponding
 // to myClassDataDict, which is in the form described above
