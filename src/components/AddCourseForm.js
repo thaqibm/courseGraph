@@ -125,7 +125,7 @@ class CoursePreview extends React.Component {
                 .then((result) => {
                     this.setState(() => {
                         return {
-                            courseData: result.data
+                            courseData: result.data[0]
                         }
                     })
                 })
@@ -159,7 +159,7 @@ class CoursePreview extends React.Component {
                 <Dropdown.ItemText>
                     <h5>{this.props.subjectCode} {this.props.catalogNumber}</h5>
                     <h5>{this.state.courseData.title}</h5>
-                    <p>Course ID: {this.state.courseData.id}</p>
+                    <p>Course ID: {this.state.courseData.courseId}</p>
                     <h5>Description</h5>
                     <p>{this.state.courseData.description}</p>
                     <h5>Requirements</h5>
