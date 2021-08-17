@@ -55,7 +55,7 @@ for SUBJECT in subjects:
 
         # otherwise, get iterator for children of main table
         mainClassTableChildren = mainClassTable.findChildren("tr", recursive=False)
-        
+
         # initialize courses list
         courses = []
         # initialize course object
@@ -109,11 +109,11 @@ for SUBJECT in subjects:
                         classes += [{
                             'classNumber': subchildren[0].text.strip() if len(subchildren) >= 1 else None,
                             'section': subchildren[1].text.strip() if len(subchildren) >= 2 else None,
-                            'location': subchildren[2].text.strip() if len(subchildren) >= 3 else None,
+                            'campusLocation': subchildren[2].text.strip() if len(subchildren) >= 3 else None,
                             'enrolCap': subchildren[6].text.strip() if len(subchildren) >= 7 else None,
                             'enrolTotal': subchildren[7].text.strip() if len(subchildren) >= 8 else None,
                             'time': subchildren[10].text.strip() if len(subchildren) >= 11 else None,
-                            'location': subchildren[11].text.strip() if len(subchildren) >= 12 else None,
+                            'room': subchildren[11].text.strip() if len(subchildren) >= 12 else None,
                             'instructor': subchildren[12].text.strip() if len(subchildren) >= 13 else None,
                         }]
 
