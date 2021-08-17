@@ -1,6 +1,7 @@
 # obtain class schedule data from classes.uwaterloo.ca
 
 import mechanize
+import json
 from bs4 import BeautifulSoup
 
 # declare explicit values for testing purposes
@@ -23,29 +24,31 @@ soup = BeautifulSoup(response.read(), 'html.parser')
 # get main table for classes 
 mainClassTable = soup.find('table', {'border': '2'})
 # get iterator for children of main table
-mainClassTableChildren = mainClassTable.children
+mainClassTableChildren = mainClassTable.findChildren("tr", recursive=False)
 
-# initialize classes list
-classes = []
+# initialize courses list
+courses = []
 
-# iterate over children
-child = ''
 # initialize course object
 course = {}
 
-child = next(mainClassTableChildren, None)
-while child is not None:
+for child in mainClassTableChildren:
 
-    children = child.findChildren()
+    children = child.findChildren(recursive=False)
+    print(children)
     
     # if tr is a header row, add course to classes and reinitialize the course object
 
     if children[0].name == 'th':
-        classes += [course]
+        courses += [course]
+        try:
+            print("Added course details for " + course['subjectCode'] + " " + course['catalogNumber'])
+        except:
+            print('error occurred when trying to print course details')
         course = {}
 
     # if tr is a course data row, add details to the course object
-    elif children[0].name == 'td' and len(children) >= 2:
+    elif children[0].name == 'td' and len(children) > 2:
         course['subjectCode'] = children[0].text
         course['catalogNumber'] = children[1].text
         course['units'] = children[2].text
@@ -59,8 +62,11 @@ while child is not None:
     # add the classes to the course
     elif children[0].name == 'td' and len(children) == 2:
         course['classes'] = []
+        print(children[1].text)
         class_soup = BeautifulSoup(children[1].text, 'html.parser')
-        classTableRows = class_soup.find('tbody').find_all('tr')
+        classTableRows = class_soup.find('table').find_all('tr')
+
+        course['classes'] += ['eyy']
 
         for row in classTableRows:
             indiv_class_soup = BeautifulSoup(row, 'html.parser')
@@ -87,5 +93,7 @@ while child is not None:
     else:
         continue
 
-    # get next table row
-    child = next(mainClassTableChildren, None)
+courses += [course]
+
+with open('data.json', 'w') as outfile:
+    json.dump(courses, outfile)
