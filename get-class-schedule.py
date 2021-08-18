@@ -1,11 +1,13 @@
 
 # %% [markdown]
-# ## Testing to get class schedule data from classes.uwaterloo.ca
+# Get class schedule data from classes.uwaterloo.ca (both undergrad + grad), store into MongoDB database
+# Takes about 20 minutes to run once
 
 # %%
 import mechanize
 import json
 from bs4 import BeautifulSoup
+import datetime
 
 # %%
 from pymongo import MongoClient
@@ -18,24 +20,35 @@ load_dotenv()
 UNDER_LINK = "https://classes.uwaterloo.ca/under.html"
 GRAD_LINK = "https://classes.uwaterloo.ca/grad.html"
 
+CURRENT_TERM = '1219'
+
 # %%
+# get subjects and terms
+subjects = []
+terms = []
 
-for link in [UNDER_LINK, GRAD_LINK]:
-    print("Fetching course data from {}".format(link))
-    
-    # get form from website
-    br = mechanize.Browser()
-    br.open(link)
-    br.select_form(action='/cgi-bin/cgiwrap/infocour/salook.pl')
+# get form from website
+br = mechanize.Browser()
+br.open(UNDER_LINK)
+br.select_form(action='/cgi-bin/cgiwrap/infocour/salook.pl')
 
-    # get list of terms and subjects offered
-    terms = [item.attrs['value'] for item in br.find_control(name='sess').items]
-    subjects = [item.attrs['value'] for item in br.find_control(name='subject').items]
+# get list of terms and subjects offered
+terms = [item.attrs['value'] for item in br.find_control(name='sess').items]
+subjects = [item.attrs['value'] for item in br.find_control(name='subject').items]
 
-    print(terms, subjects)
+# get mongodb database using mongo client
+client = MongoClient(os.getenv('MONGO_DB_CONNECTION_STRING'))
 
-    for SUBJECT in subjects:
-        for TERM in terms:
+
+for SUBJECT in subjects:
+    for TERM in [CURRENT_TERM]: # only update current term
+
+        for link in [UNDER_LINK, GRAD_LINK]:
+
+            # initialize courses list
+            courses = []
+            # initialize course object
+            course = {}
 
             # get form from website
             br = mechanize.Browser()
@@ -57,16 +70,11 @@ for link in [UNDER_LINK, GRAD_LINK]:
 
             # if query has no matches, move on
             if mainClassTable == None:
-                print("No classes for subject {} for term {}".format(SUBJECT, TERM))
+                # print("No classes for subject {} for term {}".format(SUBJECT, TERM))
                 continue
 
             # otherwise, get iterator for children of main table
             mainClassTableChildren = mainClassTable.findChildren("tr", recursive=False)
-
-            # initialize courses list
-            courses = []
-            # initialize course object
-            course = {}
 
 
             # %%
@@ -77,11 +85,16 @@ for link in [UNDER_LINK, GRAD_LINK]:
                 # if tr is a header row, add course to classes and reinitialize the course object
 
                 if children[0].name == 'th':
+                    # add last updated time to course
+                    course['dateUpdated'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    
+                    # add course to course list
                     courses += [course]
 
                     # reinitialize course
                     course = {
-                        'term': TERM
+                        'term': TERM,
+                        'level': 'UG' if link == UNDER_LINK else 'G' 
                     }
 
                 # if tr is a course data row, add details to the course object
@@ -132,34 +145,16 @@ for link in [UNDER_LINK, GRAD_LINK]:
                 
             courses += [course]
 
-            # get mongodb database using mongo client
-            client = MongoClient(os.getenv('MONGO_DB_CONNECTION_STRING'))
-            # insert data
+            # delete old data
+            delete_query = {
+                'term': TERM,
+                'subjectCode': SUBJECT,
+                'type': 'UG' if link == UNDER_LINK else 'G'
+            }
+            client['waterloo']['courses'].delete_many(delete_query)
+
+            # insert new data
             client['waterloo']['courses'].insert_many(courses)
 
-            print('Added courses for subject {} for term {}'.format(SUBJECT, TERM))
-
-            # %%
-            # write courses to json
-    # with open('data.json', 'w') as outfile:
-    #     json.dump(courses, outfile)
-
-            # %% [markdown]
-            # Dump courses data to mongodb database
-
-
-
-
-            # %%
-            # get mongodb database using mongo client
-            # client = MongoClient(os.getenv('MONGO_DB_CONNECTION_STRING'))
-            # # insert data
-            # client['waterloo']['courses'].insert_many(courses)
-
-
-            # %%
-
-
-            # %% [markdown]
-            # 
+            print('Updated courses for subject {} for term {} for level {}'.format(SUBJECT, TERM, 'UG' if link == UNDER_LINK else 'G'))
 
